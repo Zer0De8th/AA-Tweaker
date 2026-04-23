@@ -18,11 +18,11 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.StrictMode;
-import android.support.annotation.NonNull;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.DialogFragment;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import android.text.method.ScrollingMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -414,7 +414,7 @@ public class MainActivity extends AppCompatActivity {
                                 Toast.makeText(getApplicationContext(), getString(R.string.choose_apps_warning), Toast.LENGTH_LONG).show();
                             } else{
                                 temp = true;
-                                final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
+                                final androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.this);
                                 builder.setTitle(getString(R.string.warning_title));
                                 builder.setMessage(getResources().getString(R.string.warning_patch_apps));
                                 builder.setNeutralButton( getString(android.R.string.ok),
@@ -1565,80 +1565,69 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.copy:
+        int id = item.getItemId();
+        if (id == R.id.copy) {
+            final String title = "log";
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            final URL[] string = {null};
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        final ClipboardManager clipboard = (ClipboardManager)
+                                getSystemService(Context.CLIPBOARD_SERVICE);
+                        TextView textView = findViewById(R.id.logs);
+                        URL newstring = Pastebin.pastePaste(BuildConfig.PASTEBIN_API_KEY, String.valueOf(textView.getText()), title);
+                        Toast.makeText(getApplicationContext(), getString(R.string.copied_pastebin), Toast.LENGTH_LONG).show();
+                        ClipData clip = ClipData.newPlainText("logs", newstring.toString());
+                        clipboard.setPrimaryClip(clip);
+                    } catch (PasteException e) {
+                        e.printStackTrace();
+                        final ClipboardManager clipboard = (ClipboardManager)
+                                getSystemService(Context.CLIPBOARD_SERVICE);
+                        TextView textView = findViewById(R.id.logs);
+                        Toast.makeText(getApplicationContext(), getString(R.string.log_copied), Toast.LENGTH_LONG).show();
+                        ClipData clip = ClipData.newPlainText("logs", textView.getText());
+                        clipboard.setPrimaryClip(clip);
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
+                        final ClipboardManager clipboard = (ClipboardManager)
+                                getSystemService(Context.CLIPBOARD_SERVICE);
 
-                final String title = "log";
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                StrictMode.setThreadPolicy(policy);
-                final URL[] string = {null};
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            final ClipboardManager clipboard = (ClipboardManager)
-                                    getSystemService(Context.CLIPBOARD_SERVICE);
-                            TextView textView = findViewById(R.id.logs);
-                            URL newstring = Pastebin.pastePaste(BuildConfig.PASTEBIN_API_KEY, String.valueOf(textView.getText()), title);
-                            Toast.makeText(getApplicationContext(), getString(R.string.copied_pastebin), Toast.LENGTH_LONG).show();
-                            ClipData clip = ClipData.newPlainText("logs", newstring.toString());
-                            clipboard.setPrimaryClip(clip);
-                        } catch (PasteException e) {
-                            e.printStackTrace();
-                            final ClipboardManager clipboard = (ClipboardManager)
-                                    getSystemService(Context.CLIPBOARD_SERVICE);
-                            TextView textView = findViewById(R.id.logs);
-                            Toast.makeText(getApplicationContext(), getString(R.string.log_copied), Toast.LENGTH_LONG).show();
-                            ClipData clip = ClipData.newPlainText("logs", textView.getText());
-                            clipboard.setPrimaryClip(clip);
-                        } catch (RuntimeException e) {
-                            e.printStackTrace();
-                            final ClipboardManager clipboard = (ClipboardManager)
-                                    getSystemService(Context.CLIPBOARD_SERVICE);
+                        Toast.makeText(getApplicationContext(), getString(R.string.log_copied), Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.log_copied), Toast.LENGTH_LONG).show();
+                        TextView textView = findViewById(R.id.logs);
 
-                            Toast.makeText(getApplicationContext(), getString(R.string.log_copied), Toast.LENGTH_LONG).show();
-                            Toast.makeText(getApplicationContext(), getString(R.string.log_copied), Toast.LENGTH_LONG).show();
-                            TextView textView = findViewById(R.id.logs);
-
-                            ClipData clip = ClipData.newPlainText("logs", textView.getText());
-                            clipboard.setPrimaryClip(clip);
-                        }
+                        ClipData clip = ClipData.newPlainText("logs", textView.getText());
+                        clipboard.setPrimaryClip(clip);
                     }
-                });
-
-
-
-
-                break;
-
-            case R.id.about:
-                DialogFragment aboutDialog = new AboutDialog();
-                aboutDialog.show(getSupportFragmentManager(), "AboutDialog");
-                break;
-
-            case R.id.revert_everything:
-                final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-                builder.setMessage(getString(R.string.revert_everything_dialog))
-                        .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                getAndRemoveOptionsSelected();
-                            }
-                        })
-                        .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-                builder.setCancelable(true);
-                android.support.v7.app.AlertDialog Alert1 = builder.create();
-                Alert1.show();
-                break;
-            case R.id.aa_settings:
-                String packageName = "com.google.android.projection.gearhead";
-                openApp(getApplicationContext(), packageName);
-
-            default:
-                return super.onOptionsItemSelected(item);
+                }
+            });
+        } else if (id == R.id.about) {
+            DialogFragment aboutDialog = new AboutDialog();
+            aboutDialog.show(getSupportFragmentManager(), "AboutDialog");
+        } else if (id == R.id.revert_everything) {
+            final androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(MainActivity.this);
+            builder.setMessage(getString(R.string.revert_everything_dialog))
+                    .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            getAndRemoveOptionsSelected();
+                        }
+                    })
+                    .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            builder.setCancelable(true);
+            androidx.appcompat.app.AlertDialog Alert1 = builder.create();
+            Alert1.show();
+        } else if (id == R.id.aa_settings) {
+            String packageName = "com.google.android.projection.gearhead";
+            openApp(getApplicationContext(), packageName);
+        } else {
+            return super.onOptionsItemSelected(item);
         }
         return true;
     }

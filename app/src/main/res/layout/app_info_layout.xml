@@ -39,18 +39,12 @@
 
         </LinearLayout>
 
-        <com.rm.rmswitch.RMSwitch
+        <android.support.v7.widget.SwitchCompat
             android:layout_weight="3"
             android:id="@+id/checkbox_app"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:layout_gravity="center_vertical"
-            app:enabled="true"
-            app:switchDesign="slim"
-            app:switchBkgCheckedColor="#6363FF"
-            app:switchBkgNotCheckedColor="#474747"
-            app:switchToggleCheckedColor="#2298FF"
-            app:switchToggleNotCheckedColor="#121212" />
+            android:layout_gravity="center_vertical" />
 
 
     </LinearLayout>

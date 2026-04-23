@@ -1,14 +1,14 @@
 package sksa.aa.tweaker.CarRemoverActivity;
 
 import android.content.SharedPreferences;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.rm.rmswitch.RMSwitch;
+import androidx.appcompat.widget.SwitchCompat;
 
 import java.util.ArrayList;
 
@@ -21,7 +21,7 @@ public class CarAdapter extends RecyclerView.Adapter<CarAdapter.SampleViewHolder
 
     public class SampleViewHolder extends RecyclerView.ViewHolder {
 
-        public RMSwitch mCheckBox;
+        public SwitchCompat mCheckBox;
         public TextView title;
 
         public SampleViewHolder(View pItem) {

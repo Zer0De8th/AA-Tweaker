@@ -11,19 +11,19 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.NonNull;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 
-import com.rm.rmswitch.RMSwitch;
+import androidx.appcompat.widget.SwitchCompat;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -115,7 +115,7 @@ public class AccountsChooser extends AppCompatActivity {
                 new RecyclerItemClickListener(getApplicationContext(), recyclerView ,new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
-                        RMSwitch rSwitch = view.findViewById(R.id.checkbox_app);
+                        SwitchCompat rSwitch = view.findViewById(R.id.checkbox_app);
                         rSwitch.toggle();
                         rvAdapter.onClickSaveAppsWhiteList(view, position);
                         if (rvAdapter.getChecked(position)){
