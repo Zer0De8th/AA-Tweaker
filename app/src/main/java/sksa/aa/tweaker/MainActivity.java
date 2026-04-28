@@ -1688,10 +1688,10 @@ public class MainActivity extends AppCompatActivity {
 
         SharedPreferences appsListPref = getApplicationContext().getSharedPreferences( "appsListPref", 0 );
         Map<String, ?> allEntries = appsListPref.getAll();
-        logs.append( "--  Apps which will be added to whitelist: --\n" );
+        appendText( logs,  "--  Apps which will be added to whitelist: --\n" );
         String whiteListString = "";
         for ( Map.Entry<String, ?> entry : allEntries.entrySet() ) {
-            logs.append( "\t\t- " + entry.getValue() + " (" + entry.getKey() + ")\n" );
+            appendText( logs,  "\t\t- " + entry.getValue() + " (" + entry.getKey() + ")\n" );
             whiteListString += "," + entry.getKey();
 
             String pathResult = runSuWithCmd( "pm path " + entry.getKey() ).getInputStreamLogWithLabel();
@@ -3806,7 +3806,10 @@ public class MainActivity extends AppCompatActivity {
         appendText( logs, runSuWithCmd( "am kill all com.google.android.gms" ).getStreamLogsWithLabels() );
     }
 
+    private static final String LOG_TAG = "AA_TWEAKER_LOGS";
+
     private void appendText( final TextView textView, final String s ) {
+        android.util.Log.d( LOG_TAG, s );
         runOnUiThread( new Runnable() {
             @Override
             public void run() {
