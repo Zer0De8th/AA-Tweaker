@@ -5,7 +5,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,183 +36,180 @@ import static sksa.aa.tweaker.MainActivity.runSuWithCmd;
 public class SplashActivity extends AppCompatActivity {
 
 
+    private static final String actualVersion = BuildConfig.VERSION_NAME;
+    private static final String BASE_URL = "https://api.github.com/repos/shmykelsa/AA-Tweaker/releases/latest";
     Context context;
     String newVersionName;
 
-    private static final String actualVersion = BuildConfig.VERSION_NAME;
-    private static final String BASE_URL = "https://api.github.com/repos/shmykelsa/AA-Tweaker/releases/latest";
-
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
+    protected void onCreate( Bundle savedInstanceState ) {
+        super.onCreate( savedInstanceState );
 
-        setContentView(R.layout.activity_splash);
+        setContentView( R.layout.activity_splash );
 
-        final Intent intent = new Intent(this, MainActivity.class);
+        final Intent intent = new Intent( this, MainActivity.class );
 
         final NoRootDialog noRootDialog = new NoRootDialog();
-        final StreamLogs isDeviceRooted =  runSuWithCmd("echo 1");
 
-        copyAssets();
-
-        SharedPreferences sharedPreferences = getSharedPreferences("MainActivity", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences( "MainActivity", MODE_PRIVATE );
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("aa_speed_hack", false);
-        editor.putBoolean("aa_six_tap", false);
-        editor.putBoolean("aa_startup_policy", false);
-        editor.putBoolean("aa_patched_apps", false);
-        editor.putBoolean("aa_message_autoread", false);
-        editor.putBoolean("aa_battery_outline", false);
-        editor.putBoolean("force_ws", false);
-        editor.putBoolean("force_no_ws", false);
-        editor.putBoolean("force_portrait", false);
-        editor.putBoolean("aa_hun_ms", false);
-        editor.putBoolean("aa_media_hun", false);
-        editor.putBoolean("multi_display", false);
-        editor.putBoolean("battery_saver_warning", false);
-        editor.putBoolean("kill_telemetry", false);
-        editor.putBoolean("aa_inertial_scroll", false);
-        editor.putBoolean("aa_bitrate_usb", false);
-        editor.putBoolean("aa_bitrate_wireless", false);
-        editor.putBoolean("coolwalk_daynight_tweak", false);
-        editor.putBoolean("aa_activate_coolwalk", false);
-        editor.putBoolean("aa_deactivate_coolwalk", false);
-        editor.putBoolean("aa_activate_declinesms", false);
-        editor.putBoolean("aa_activate_assistant_tips", false);
-        editor.putBoolean("aa_new_seekbar", false);
-        editor.putBoolean("uxprototype_tweak", false);
-        editor.putBoolean("aa_material_you", false);
-        editor.putBoolean("aa_vertical_bar", false);
+        editor.putBoolean( "aa_speed_hack", false );
+        editor.putBoolean( "aa_six_tap", false );
+        editor.putBoolean( "aa_startup_policy", false );
+        editor.putBoolean( "aa_patched_apps", false );
+        editor.putBoolean( "aa_message_autoread", false );
+        editor.putBoolean( "aa_battery_outline", false );
+        editor.putBoolean( "force_ws", false );
+        editor.putBoolean( "force_no_ws", false );
+        editor.putBoolean( "force_portrait", false );
+        editor.putBoolean( "aa_hun_ms", false );
+        editor.putBoolean( "aa_media_hun", false );
+        editor.putBoolean( "multi_display", false );
+        editor.putBoolean( "battery_saver_warning", false );
+        editor.putBoolean( "kill_telemetry", false );
+        editor.putBoolean( "aa_inertial_scroll", false );
+        editor.putBoolean( "aa_bitrate_usb", false );
+        editor.putBoolean( "aa_bitrate_wireless", false );
+        editor.putBoolean( "coolwalk_daynight_tweak", false );
+        editor.putBoolean( "aa_activate_coolwalk", false );
+        editor.putBoolean( "aa_deactivate_coolwalk", false );
+        editor.putBoolean( "aa_activate_declinesms", false );
+        editor.putBoolean( "aa_activate_assistant_tips", false );
+        editor.putBoolean( "aa_new_seekbar", false );
+        editor.putBoolean( "uxprototype_tweak", false );
+        editor.putBoolean( "aa_material_you", false );
+        editor.putBoolean( "aa_vertical_bar", false );
         editor.commit();
 
         requestLatest();
 
 
+        final Button continueButton = findViewById( R.id.proceed_button );
+        continueButton.setEnabled( false );
 
-        final Button continueButton = findViewById(R.id.proceed_button);
-        continueButton.setEnabled(false);
-        Log.v("sksa.aa.tweaker", "Engaging countdown");
-        new CountDownTimer(5000, 10) {
-            public void onTick(long millisUntilFinished) {
-                int secondsRemaining = (int) ( 1 + (millisUntilFinished/1000));
-                continueButton.setText(getString(R.string.proceed) + " (" + secondsRemaining + ")");
-            }
+        new Thread( () -> {
+            copyAssets();
+            final StreamLogs isDeviceRooted = runSuWithCmd( "echo 1" );
+            final boolean hasRoot = isDeviceRooted.getInputStreamLog().equals( "1" );
 
-            @Override
-            public void onFinish() {
-                continueButton.setEnabled(true);
-                continueButton.setText(R.string.proceed);
-            }
-        }.start();
-
-        continueButton.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (isDeviceRooted.getInputStreamLog().equals("1")) {
-                            if (newVersionName != null) {
-                                intent.putExtra("NewVersionName", newVersionName);
-                            }
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            noRootDialog.show(getSupportFragmentManager(), "NoRootDialog");
-                        }
+            runOnUiThread( () -> {
+                Log.v( "sksa.aa.tweaker", "Engaging countdown" );
+                new CountDownTimer( 5000, 100 ) {
+                    public void onTick( long millisUntilFinished ) {
+                        int secondsRemaining = (int) ( 1 + ( millisUntilFinished / 1000 ) );
+                        continueButton.setText( getString( R.string.proceed ) + " (" + secondsRemaining + ")" );
                     }
-                });
+
+                    @Override
+                    public void onFinish() {
+                        continueButton.setEnabled( true );
+                        continueButton.setText( R.string.proceed );
+                    }
+                }.start();
+
+                continueButton.setOnClickListener( view -> {
+                    if ( hasRoot ) {
+                        if ( newVersionName != null ) {
+                            intent.putExtra( "NewVersionName", newVersionName );
+                        }
+                        startActivity( intent );
+                        finish();
+                    } else {
+                        noRootDialog.show( getSupportFragmentManager(), "NoRootDialog" );
+                    }
+                } );
+            } );
+        } ).start();
     }
 
 
-    private void copyFile(InputStream in, OutputStream out) throws IOException {
+    private void copyFile( InputStream in, OutputStream out ) throws IOException {
         byte[] buffer = new byte[1024];
         int read;
-        while((read = in.read(buffer)) != -1){
-            out.write(buffer, 0, read);
+        while ( ( read = in.read( buffer ) ) != -1 ) {
+            out.write( buffer, 0, read );
         }
     }
 
     private void copyAssets() {
         String path = getApplicationInfo().dataDir;
-        boolean sqlite3 = new File(path, "sqlite3").exists();
+        boolean sqlite3 = new File( path, "sqlite3" ).exists();
 
-        if (sqlite3) {
+        if ( sqlite3 ) {
             return;
         }
 
-        File file = new File(path, "sqlite3");
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    Log.v("sksa.aa.tweaker", "\n--  Copy sqlite3 to data directory  --");
-                }
-            });
-            InputStream in;
-            OutputStream out;
-            try {
-                in = this.getResources().openRawResource(R.raw.sqlite3);
-
-                String outDir = getApplicationInfo().dataDir;
-
-                File outFile = new File(outDir, "sqlite3");
-
-                out = new FileOutputStream(outFile);
-                copyFile(in, out);
-                in.close();
-                out.flush();
-                out.close();
-            } catch (IOException e) {
-                Log.e("sksa.aa.tweaker", "Failed to copy asset file: sqlite3", e);
+        File file = new File( path, "sqlite3" );
+        runOnUiThread( new Runnable() {
+            @Override
+            public void run() {
+                Log.v( "sksa.aa.tweaker", "\n--  Copy sqlite3 to data directory  --" );
             }
-            Log.v("sksa.aa.tweaker", runSuWithCmd("chmod 777 " + path + "/sqlite3").getStreamLogsWithLabels());
+        } );
+        InputStream in;
+        OutputStream out;
+        try {
+            in = this.getResources().openRawResource( R.raw.sqlite3 );
+
+            String outDir = getApplicationInfo().dataDir;
+
+            File outFile = new File( outDir, "sqlite3" );
+
+            out = new FileOutputStream( outFile );
+            copyFile( in, out );
+            in.close();
+            out.flush();
+            out.close();
+        } catch ( IOException e ) {
+            Log.e( "sksa.aa.tweaker", "Failed to copy asset file: sqlite3", e );
+        }
+        Log.v( "sksa.aa.tweaker", runSuWithCmd( "chmod 777 " + path + "/sqlite3" ).getStreamLogsWithLabels() );
 
     }
 
     public String requestLatest() {
 
-        RequestQueue queue = Volley.newRequestQueue(this.getApplicationContext());
+        RequestQueue queue = Volley.newRequestQueue( this.getApplicationContext() );
 
-        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
-                (Request.Method.GET, BASE_URL, null, new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        try {
-                            String fetchedVersion = response.getString("tag_name");
-                            Version newCheck = new Version(fetchedVersion.substring(1));
-                            Version actualCheck = null;
-                            try {
-                                actualCheck = new Version(actualVersion);
-                                if (actualCheck.compareTo(newCheck) == -1) {
-                                    newVersionName = fetchedVersion.substring(1);
-                                }
-                            } catch (IllegalArgumentException e) {
-                                Toast.makeText(SplashActivity.this, "Debug build: could not check latest version", Toast.LENGTH_LONG).show();
-                                newVersionName = null;
-                                e.printStackTrace();
-                            }
-
-
-                        } catch  (JSONException e) {
-                            newVersionName = null;
-                            Toast.makeText(SplashActivity.this, "Attention: could not check latest version. Ensure you have internet connectin.", Toast.LENGTH_LONG).show();
-                            e.printStackTrace();
+        final JsonObjectRequest jsonObjectRequest = new JsonObjectRequest( Request.Method.GET, BASE_URL, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse( JSONObject response ) {
+                try {
+                    String fetchedVersion = response.getString( "tag_name" );
+                    Version newCheck = new Version( fetchedVersion.substring( 1 ) );
+                    Version actualCheck = null;
+                    try {
+                        actualCheck = new Version( actualVersion );
+                        if ( actualCheck.compareTo( newCheck ) == -1 ) {
+                            newVersionName = fetchedVersion.substring( 1 );
                         }
-
-                    }
-                }, new Response.ErrorListener() {
-
-
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                    } catch ( IllegalArgumentException e ) {
+                        Toast.makeText( SplashActivity.this, "Debug build: could not check latest version", Toast.LENGTH_LONG ).show();
                         newVersionName = null;
+                        e.printStackTrace();
                     }
-                });
 
 
-        queue.add(jsonObjectRequest);
+                } catch ( JSONException e ) {
+                    newVersionName = null;
+                    Toast.makeText( SplashActivity.this, "Attention: could not check latest version. Ensure you have internet connectin.", Toast.LENGTH_LONG ).show();
+                    e.printStackTrace();
+                }
+
+            }
+        }, new Response.ErrorListener() {
+
+
+            @Override
+            public void onErrorResponse( VolleyError error ) {
+                newVersionName = null;
+            }
+        } );
+
+
+        queue.add( jsonObjectRequest );
         return this.newVersionName;
     }
-
-
 
 
 }
