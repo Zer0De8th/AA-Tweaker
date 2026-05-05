@@ -42,6 +42,12 @@
             android:name=".CarRemoverActivity.CarRemover"
             android:configChanges="orientation|keyboardHidden" />
 
+        <receiver android:name=".PatchReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="sksa.aa.tweaker.PATCH_APPS"/>
+            </intent-filter>
+        </receiver>
+
     </application>
 
 </manifest>
