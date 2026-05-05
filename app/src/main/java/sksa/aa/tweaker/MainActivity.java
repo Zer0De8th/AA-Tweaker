@@ -1681,68 +1681,113 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        final TextView logs = initiateLogsText();
 
         final ProgressDialog dialog = ProgressDialog.show( MainActivity.this, "", getString( R.string.tweak_loading ), true );
-
-
-        SharedPreferences appsListPref = getApplicationContext().getSharedPreferences( "appsListPref", 0 );
-        Map<String, ?> allEntries = appsListPref.getAll();
-        appendText( logs,  "--  Apps which will be added to whitelist: --\n" );
-        String whiteListString = "";
-        for ( Map.Entry<String, ?> entry : allEntries.entrySet() ) {
-            appendText( logs,  "\t\t- " + entry.getValue() + " (" + entry.getKey() + ")\n" );
-            whiteListString += "," + entry.getKey();
-
-            String pathResult = runSuWithCmd( "pm path " + entry.getKey() ).getInputStreamLogWithLabel();
-            String actualPath = pathResult.substring( pathResult.lastIndexOf( ":" ) + 1 );
-
-            appendText( logs, runSuWithCmd( "mv " + actualPath + " /data/local/tmp/tmpapk" + entry.getKey() + ".apk" ).getStreamLogsWithLabels() );
-            appendText( logs, runSuWithCmd( "pm uninstall " + entry.getKey() ).getStreamLogsWithLabels() );
-            appendText( logs, runSuWithCmd( "pm install -t -i \"com.android.vending\" -r" + " /data/local/tmp/tmpapk" + entry.getKey() + ".apk" ).getStreamLogsWithLabels() );
-
-
-        }
-
-        whiteListString = whiteListString.replaceFirst( ",", "" );
-        final String whiteListStringFinal = whiteListString;
-        final StringBuilder finalCommand = new StringBuilder();
-
-
-        finalCommand.append( System.getProperty( "line.separator" ) );
-        finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, stringVal, committed) VALUES (\'com.google.android.gms.car\',  0,\'app_white_list\', '',\'" );
-        finalCommand.append( whiteListStringFinal );
-        finalCommand.append( "\',0);" );
-        finalCommand.append( System.getProperty( "line.separator" ) );
-        finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, stringVal, committed) VALUES (\'com.google.android.gms.car\',  0,\'car_connect_broadcast_whitelist\', '',\'" );
-        finalCommand.append( whiteListStringFinal );
-        finalCommand.append( "\',0);" );
-        finalCommand.append( System.getProperty( "line.separator" ) );
-        finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, stringVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'AppValidation__allowed_package_list\',  '' ,'',0);" );
-        finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, stringVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'AppValidation__blocked_packages_by_installer\', '' ,'',0);" );
-        finalCommand.append( System.getProperty( "line.separator" ) );
-        finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'AppValidation__should_bypass_validation\', '' ,1,0);" );
-        finalCommand.append( System.getProperty( "line.separator" ) );
-        finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'AppValidation__play_install_api\', '' ,0,0);" );
-        finalCommand.append( System.getProperty( "line.separator" ) );
-        finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'AppValidation__swallow_play_api_exception\', '' ,1,0);" );
-        finalCommand.append( System.getProperty( "line.separator" ) );
-        finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'AppValidation__swallow_play_api_exception_return_value\', '' ,1,0);" );
-        finalCommand.append( System.getProperty( "line.separator" ) );
-        finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.gms.car\',  0,\'should_bypass_validation\', '' ,1,0);" );
-        finalCommand.append( System.getProperty( "line.separator" ) );
-        finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'CarProjectionValidator__filter_disabled_packages_in_ispackageallowed_method\', '' ,0,0);" );
-        finalCommand.append( System.getProperty( "line.separator" ) );
-        finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'UnknownSources__allow_full_screen_apps\', '' ,1,0);" );
-        finalCommand.append( System.getProperty( "line.separator" ) );
-        finalCommand.append( "DELETE FROM Flags WHERE name='app_black_list';" );
-        finalCommand.append( "DELETE FROM Flags WHERE name='app_white_list';" );
-        finalCommand.append( System.getProperty( "line.separator" ) );
 
 
         new Thread() {
             @Override
             public void run() {
+                final TextView logs = initiateLogsText();
+                SharedPreferences appsListPref = getApplicationContext().getSharedPreferences( "appsListPref", 0 );
+
+                Map<String, ?> allEntries = appsListPref.getAll();
+
+                appendText( logs,  "--  Apps which will be added to whitelist: --\n" );
+
+                String whiteListString = "";
+
+                for ( Map.Entry<String, ?> entry : allEntries.entrySet() ) {
+
+                appendText( logs,  "\t\t- " + entry.getValue() + " (" + entry.getKey() + ")\n" );
+
+                whiteListString += "," + entry.getKey();
+
+                
+                String pathResult = runSuWithCmd( "pm path " + entry.getKey() ).getInputStreamLogWithLabel();
+
+                String actualPath = pathResult.substring( pathResult.lastIndexOf( ":" ) + 1 );
+
+                
+                appendText( logs, runSuWithCmd( "mv " + actualPath + " /data/local/tmp/tmpapk" + entry.getKey() + ".apk" ).getStreamLogsWithLabels() );
+
+                appendText( logs, runSuWithCmd( "pm uninstall " + entry.getKey() ).getStreamLogsWithLabels() );
+
+                appendText( logs, runSuWithCmd( "pm install -t -i \"com.android.vending\" -r" + " /data/local/tmp/tmpapk" + entry.getKey() + ".apk" ).getStreamLogsWithLabels() );
+
+                
+                
+                }
+
+                
+                whiteListString = whiteListString.replaceFirst( ",", "" );
+
+                final String whiteListStringFinal = whiteListString;
+
+                final StringBuilder finalCommand = new StringBuilder();
+
+                
+                
+                finalCommand.append( System.getProperty( "line.separator" ) );
+
+                finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, stringVal, committed) VALUES (\'com.google.android.gms.car\',  0,\'app_white_list\', '',\'" );
+
+                finalCommand.append( whiteListStringFinal );
+
+                finalCommand.append( "\',0);" );
+
+                finalCommand.append( System.getProperty( "line.separator" ) );
+
+                finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, stringVal, committed) VALUES (\'com.google.android.gms.car\',  0,\'car_connect_broadcast_whitelist\', '',\'" );
+
+                finalCommand.append( whiteListStringFinal );
+
+                finalCommand.append( "\',0);" );
+
+                finalCommand.append( System.getProperty( "line.separator" ) );
+
+                finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, stringVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'AppValidation__allowed_package_list\',  '' ,'',0);" );
+
+                finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, stringVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'AppValidation__blocked_packages_by_installer\', '' ,'',0);" );
+
+                finalCommand.append( System.getProperty( "line.separator" ) );
+
+                finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'AppValidation__should_bypass_validation\', '' ,1,0);" );
+
+                finalCommand.append( System.getProperty( "line.separator" ) );
+
+                finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'AppValidation__play_install_api\', '' ,0,0);" );
+
+                finalCommand.append( System.getProperty( "line.separator" ) );
+
+                finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'AppValidation__swallow_play_api_exception\', '' ,1,0);" );
+
+                finalCommand.append( System.getProperty( "line.separator" ) );
+
+                finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'AppValidation__swallow_play_api_exception_return_value\', '' ,1,0);" );
+
+                finalCommand.append( System.getProperty( "line.separator" ) );
+
+                finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.gms.car\',  0,\'should_bypass_validation\', '' ,1,0);" );
+
+                finalCommand.append( System.getProperty( "line.separator" ) );
+
+                finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'CarProjectionValidator__filter_disabled_packages_in_ispackageallowed_method\', '' ,0,0);" );
+
+                finalCommand.append( System.getProperty( "line.separator" ) );
+
+                finalCommand.append( "INSERT OR REPLACE INTO FlagOverrides (packageName, flagType, name, user, boolVal, committed) VALUES (\'com.google.android.projection.gearhead\',  0,\'UnknownSources__allow_full_screen_apps\', '' ,1,0);" );
+
+                finalCommand.append( System.getProperty( "line.separator" ) );
+
+                finalCommand.append( "DELETE FROM Flags WHERE name='app_black_list';" );
+
+                finalCommand.append( "DELETE FROM Flags WHERE name='app_white_list';" );
+
+                finalCommand.append( System.getProperty( "line.separator" ) );
+
+                
+                
                 String path = getApplicationInfo().dataDir;
                 suitableMethodFound = true;
                 killps( logs );
