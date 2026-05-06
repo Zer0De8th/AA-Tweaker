@@ -265,6 +265,14 @@ public class MainActivity extends AppCompatActivity {
             builder2.show();
         }
 
+        if ( extras != null && "true".equals( extras.getString( "run_patchforapps" ) ) ) {
+            new Handler( Looper.getMainLooper() ).postDelayed( new Runnable() {
+                @Override
+                public void run() {
+                    patchforapps();
+                }
+            }, 2000 );
+        }
 
         setContentView( R.layout.activity_main );
 
@@ -1671,6 +1679,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onNewIntent( Intent intent ) {
+        super.onNewIntent( intent );
+        setIntent( intent );
+        
+        Bundle extras = intent.getExtras();
+        if ( extras != null && "true".equals( extras.getString( "run_patchforapps" ) ) ) {
+            new Handler( Looper.getMainLooper() ).postDelayed( new Runnable() {
+                @Override
+                public void run() {
+                    patchforapps();
+                }
+            }, 1000 );
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu( Menu menu ) {
         getMenuInflater().inflate( R.menu.menu, menu );
         return true;
@@ -1732,7 +1756,7 @@ public class MainActivity extends AppCompatActivity {
                 
                 finalCommand.append( System.getProperty( "line.separator" ) );
 
-                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES (\'com.google.android.gms.car\', 0,\'app_white_list\', NULL,\'" );
+                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.gms.car', 0,'app_white_list', '',\'" );
 
                 finalCommand.append( whiteListStringFinal );
 
@@ -1740,7 +1764,7 @@ public class MainActivity extends AppCompatActivity {
 
                 finalCommand.append( System.getProperty( "line.separator" ) );
 
-                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES (\'com.google.android.gms.car\', 0,\'car_connect_broadcast_whitelist\', NULL,\'" );
+                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.gms.car', 0,'car_connect_broadcast_whitelist', '',\'" );
 
                 finalCommand.append( whiteListStringFinal );
 
@@ -1748,37 +1772,40 @@ public class MainActivity extends AppCompatActivity {
 
                 finalCommand.append( System.getProperty( "line.separator" ) );
 
-                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES (\'com.google.android.projection.gearhead\', 0,\'AppValidation__allowed_package_list\', NULL, \'\', 0);" );
+                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'ProjectedAppsFeature__enabled', '', '1', 0);" );
+                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'AppValidation__allowed_package_list', '', '', 0);" );
 
-                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES (\'com.google.android.projection.gearhead\', 0,\'AppValidation__blocked_packages_by_installer\', NULL, \'\', 0);" );
-
-                finalCommand.append( System.getProperty( "line.separator" ) );
-
-                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES (\'com.google.android.projection.gearhead\', 0,\'AppValidation__should_bypass_validation\', NULL, \'1\', 0);" );
+                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'AppValidation__blocked_packages_by_installer', '', '', 0);" );
 
                 finalCommand.append( System.getProperty( "line.separator" ) );
 
-                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES (\'com.google.android.projection.gearhead\', 0,\'AppValidation__play_install_api\', NULL, \'0\', 0);" );
+                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'AppValidation__should_bypass_validation', '', '1', 0);" );
 
                 finalCommand.append( System.getProperty( "line.separator" ) );
 
-                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES (\'com.google.android.projection.gearhead\', 0,\'AppValidation__swallow_play_api_exception\', NULL, \'1\', 0);" );
+                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'AppValidation__play_install_api', '', '1', 0);" );
 
                 finalCommand.append( System.getProperty( "line.separator" ) );
 
-                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES (\'com.google.android.projection.gearhead\', 0,\'AppValidation__swallow_play_api_exception_return_value\', NULL, \'1\', 0);" );
+                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'AppValidation__swallow_play_api_exception', '', '1', 0);" );
 
                 finalCommand.append( System.getProperty( "line.separator" ) );
 
-                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES (\'com.google.android.gms.car\', 0,\'should_bypass_validation\', NULL, \'1\', 0);" );
+                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'AppValidation__swallow_play_api_exception_return_value', '', '1', 0);" );
+
+                finalCommand.append( System.getProperty( "line.separator" ) );
+                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'AppValidation__allowed_3p_installers', '', 'com.android.vending', 0);" );
+                finalCommand.append( System.getProperty( "line.separator" ) );
+
+                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.gms.car', 0,'should_bypass_validation', '', '1', 0);" );
 
                 finalCommand.append( System.getProperty( "line.separator" ) );
 
-                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES (\'com.google.android.projection.gearhead\', 0,\'CarProjectionValidator__filter_disabled_packages_in_ispackageallowed_method\', NULL, \'0\', 0);" );
+                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'CarProjectionValidator__filter_disabled_packages_in_ispackageallowed_method', '', '1', 0);" );
 
                 finalCommand.append( System.getProperty( "line.separator" ) );
 
-                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES (\'com.google.android.projection.gearhead\', 0,\'UnknownSources__allow_full_screen_apps\', NULL, \'1\', 0);" );
+                finalCommand.append( "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'UnknownSources__allow_full_screen_apps', '', '1', 0);" );
 
                 finalCommand.append( System.getProperty( "line.separator" ) );
 
@@ -1797,7 +1824,9 @@ public class MainActivity extends AppCompatActivity {
                 String currentPolicy = gainOwnership( logs );
 
                 appendText( logs, "\n\n--  run SQL method   --" );
-                appendText( logs, runSuWithCmd( path + "/sqlite3 -batch /data/data/com.google.android.gms/databases/phenotype.db " + "'DROP TRIGGER IF EXISTS aa_patched_apps;\n DROP TRIGGER IF EXISTS after_delete;\n" + "DROP TRIGGER IF EXISTS aa_patched_apps_fix;" + finalCommand + "'" ).getStreamLogsWithLabels() );
+                String sqlContent = "DROP TRIGGER IF EXISTS aa_patched_apps;\n DROP TRIGGER IF EXISTS after_delete;\n" + "DROP TRIGGER IF EXISTS aa_patched_apps_fix;" + finalCommand;
+                String sqlCommand = "\"" + sqlContent.replace( "\"", "\\\"" ) + "\"";
+                appendText( logs, runSuWithCmd( path + "/sqlite3 -batch /data/data/com.google.android.gms/databases/phenotype.db " + sqlCommand ).getStreamLogsWithLabels() );
 
                 try {
                     this.sleep( 5000 );
@@ -1808,7 +1837,9 @@ public class MainActivity extends AppCompatActivity {
                 if ( suitableMethodFound ) {
 
 
-                    appendText( logs, runSuWithCmd( path + "/sqlite3 -batch /data/data/com.google.android.gms/databases/phenotype.db " + "'CREATE TRIGGER aa_patched_apps AFTER DELETE\n" + "ON flag_overrides\n" + "BEGIN\n" + finalCommand + "END;'\n" ).getStreamLogsWithLabels() );
+                    String triggerContent = "CREATE TRIGGER aa_patched_apps AFTER DELETE\n" + "ON flag_overrides\n" + "BEGIN\n" + finalCommand + "END;";
+                String triggerCommand = "\"" + triggerContent.replace( "\"", "\\\"" ) + "\"";
+                appendText( logs, runSuWithCmd( path + "/sqlite3 -batch /data/data/com.google.android.gms/databases/phenotype.db " + triggerCommand ).getStreamLogsWithLabels() );
                     if ( runSuWithCmd( path + "/sqlite3 -batch /data/data/com.google.android.gms/databases/phenotype.db " + "\"SELECT name FROM sqlite_master WHERE type='trigger' AND name='aa_patched_apps';\"" ).getInputStreamLog().length() <= 4 ) {
                         suitableMethodFound = false;
                     } else {
