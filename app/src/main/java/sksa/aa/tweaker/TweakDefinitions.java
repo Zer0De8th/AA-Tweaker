@@ -404,6 +404,7 @@ public class TweakDefinitions {
         return new String[] {
             "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.gms.car', 0,'app_white_list', NULL, '" + whiteListString + "', 0);",
             "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.gms.car', 0,'car_connect_broadcast_whitelist', NULL, '" + whiteListString + "', 0);",
+            "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'ProjectedAppsFeature__enabled', NULL, '1', 0);",
             "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'AppValidation__allowed_package_list', NULL, '', 0);",
             "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'AppValidation__blocked_packages_by_installer', NULL, '', 0);",
             "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'AppValidation__should_bypass_validation', NULL, '1', 0);",
@@ -411,6 +412,7 @@ public class TweakDefinitions {
             "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'AppValidation__swallow_play_api_exception', NULL, '1', 0);",
             "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'AppValidation__swallow_play_api_exception_return_value', NULL, '1', 0);",
             "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.gms.car', 0,'should_bypass_validation', NULL, '1', 0);",
+            "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'CarProjectionValidator__include_enabled_only_components', NULL, '0', 0);",
             "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'CarProjectionValidator__filter_disabled_packages_in_ispackageallowed_method', NULL, '0', 0);",
             "INSERT OR REPLACE INTO flag_overrides (config_package_name, type, name, account_id, value, source) VALUES ('com.google.android.projection.gearhead', 0,'UnknownSources__allow_full_screen_apps', NULL, '1', 0);",
             "-- DELETE FROM Flags WHERE name='app_black_list';",
