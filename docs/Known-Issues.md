@@ -92,6 +92,29 @@ All 26 tweak keys are reset to `false` on each launch; state is read from live D
 
 ---
 
+### ~~RT-008~~ — ✅ FIXED: MainActivity force-closed on launch (PageIndicatorView AndroidX mismatch)
+**Severity**: Critical — app was unusable; MainActivity crashed every time it opened (e.g. right after tapping "Proceed" on the splash screen).
+
+**Symptom**: Instant force-close on opening MainActivity. Reproduced on an Android 16 (API 36) emulator with this exact trace:
+
+```
+java.lang.RuntimeException: Unable to start activity ...MainActivity:
+  android.view.InflateException: Binary XML file line #69 in layout/activity_main:
+  Error inflating class com.rd.PageIndicatorView
+    at sksa.aa.tweaker.MainActivity.onCreate(MainActivity.java:151)
+Caused by: java.lang.ClassNotFoundException: com.rd.PageIndicatorView
+Caused by: java.lang.NoClassDefFoundError:
+  Landroidx/viewpager/widget/ViewPager$OnPageChangeListener;
+```
+
+**Root cause**: The JitPack dependency was pinned to `com.github.romandanylyk:PageIndicatorView:v.1.0.3`. That release migrated PageIndicatorView to **AndroidX** and references `androidx.viewpager.widget.ViewPager`. This app still ships the **support library** (`com.android.support:support-v4:28.0.0` → `android.support.v4.view.ViewPager`), so the AndroidX class is absent at runtime and inflating `<com.rd.PageIndicatorView>` throws `NoClassDefFoundError`. The crash is deterministic and unrelated to root — it had been masked in earlier emulator runs that only launched SplashActivity.
+
+**Fix**: Pinned to `v.1.0.2`, the last support-library release of PageIndicatorView (`com.android.support:support-core-ui:27.1.1`), which binds correctly to the support-library ViewPager used in `activity_main.xml`. This keeps the page-dots indicator. Will revert to a modern AndroidX PageIndicatorView as part of the AndroidX migration (Roadmap Phase 2).
+
+**Note**: A CI emulator "crash-diagnostics" job (API 36) was added in `.github/workflows/build.yml` to launch MainActivity directly and surface stack traces like this one, and a process-wide `CrashHandler` now persists any uncaught exception and shows it in a copyable dialog on the next launch.
+
+---
+
 ## Code Quality Issues
 
 ### CQ-001 — Monolithic MainActivity (~250KB)

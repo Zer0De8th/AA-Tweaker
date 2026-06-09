@@ -72,8 +72,12 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
     // UI libs — migrated from jcenter to JitPack
-    // Tag on GitHub is "v.1.0.3" (dot after v)
-    implementation 'com.github.romandanylyk:PageIndicatorView:v.1.0.3'
+    // Pinned to v.1.0.2 (the LAST support-library release). v.1.0.3 migrated
+    // PageIndicatorView to AndroidX (androidx.viewpager.widget.ViewPager),
+    // which this app does not ship — that mismatch makes com.rd.PageIndicatorView
+    // fail to inflate in activity_main.xml and crashes MainActivity on launch
+    // (NoClassDefFoundError: androidx/viewpager/widget/ViewPager$OnPageChangeListener).
+    implementation 'com.github.romandanylyk:PageIndicatorView:v.1.0.2'
     // RMSwitch was jcenter-only; source is RiccardoMoro/RMSwitch, tag v1.2.2
     implementation 'com.github.RiccardoMoro:RMSwitch:v1.2.2'
 
