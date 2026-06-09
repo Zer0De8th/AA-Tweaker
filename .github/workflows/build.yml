@@ -108,10 +108,10 @@ jobs:
           echo "=== TEST 1: SplashActivity launch ==="
           adb shell am start -W -n sksa.aa.tweaker/.SplashActivity
           sleep 2
-          if adb logcat -d | grep -q "FATAL EXCEPTION"; then
+          adb logcat -d > splash_logcat.txt
+          if grep -A1 "FATAL EXCEPTION" splash_logcat.txt | grep -q "Process: sksa.aa.tweaker"; then
             echo "CRASH in SplashActivity"
-            adb logcat -d > full_logcat.txt
-            cat full_logcat.txt
+            cat splash_logcat.txt
             exit 1
           fi
           echo "SplashActivity: OK"
@@ -136,8 +136,8 @@ jobs:
           cat crash_log.txt
           echo "=== END ==="
 
-          if grep -q "FATAL EXCEPTION" full_logcat.txt; then
-            echo "CRASH DETECTED — full logcat follows:"
+          if grep -A1 "FATAL EXCEPTION" full_logcat.txt | grep -q "Process: sksa.aa.tweaker"; then
+            echo "OUR APP CRASHED — full logcat follows:"
             cat full_logcat.txt
             exit 1
           fi
