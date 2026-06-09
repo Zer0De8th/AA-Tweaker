@@ -83,6 +83,6 @@ dependencies {
 
     // JitPack — bravobit/jPastebin has no tags, pinned to latest commit
     implementation 'com.github.bravobit:jPastebin:2a05d9a'
-    // iGio90/BottomDialogs tag is "1.0" (no v prefix)
-    implementation 'com.github.iGio90:BottomDialogs:1.0'
+    // BottomDialog.java uses com.github.javiersantos.bottomdialogs.R — use original repo
+    implementation 'com.github.javiersantos:BottomDialogs:1.2.1'
 }
