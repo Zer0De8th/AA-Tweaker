@@ -87,6 +87,32 @@ jobs:
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
 
+      - name: Prepare test script
+        run: |
+          cat > emulator_test.sh << 'SCRIPT'
+          #!/usr/bin/env bash
+          set -e
+          APK=$(find app/build/outputs/apk/debug -name "*.apk" | head -1)
+          echo "Installing APK: $APK"
+          adb install "$APK"
+          echo "Launching SplashActivity..."
+          adb shell am start -W -n sksa.aa.tweaker/.SplashActivity
+          sleep 10
+          echo "Capturing logcat..."
+          adb logcat -d > full_logcat.txt
+          grep -E "AndroidRuntime|FATAL EXCEPTION|sksa\.aa\.tweaker" full_logcat.txt > crash_log.txt || true
+          echo "=== RELEVANT LOG LINES ==="
+          cat crash_log.txt
+          echo "=== END ==="
+          if grep -q "FATAL EXCEPTION" full_logcat.txt; then
+            echo "CRASH DETECTED — full logcat follows:"
+            cat full_logcat.txt
+            exit 1
+          fi
+          echo "No fatal crash detected."
+          SCRIPT
+          chmod +x emulator_test.sh
+
       - name: Run launch test on emulator
         uses: reactivecircus/android-emulator-runner@v2
         with:
@@ -96,22 +122,7 @@ jobs:
           force-avd-creation: false
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
-          script: |
-            APK=$(find app/build/outputs/apk/debug -name "*.apk" | head -1)
-            adb install "$APK"
-            adb shell am start -W -n sksa.aa.tweaker/.SplashActivity
-            sleep 8
-            adb logcat -d > full_logcat.txt
-            grep -E "AndroidRuntime|FATAL EXCEPTION|sksa.aa.tweaker|E/.*:" full_logcat.txt > crash_log.txt || true
-            echo "=== CRASH / ERROR LINES ==="
-            cat crash_log.txt
-            echo "=== END ==="
-            if grep -q "FATAL EXCEPTION" full_logcat.txt; then
-              echo "CRASH DETECTED"
-              cat full_logcat.txt
-              exit 1
-            fi
-            echo "No fatal crash detected in logcat."
+          script: ./emulator_test.sh
 
       - name: Upload logcat artifacts
         uses: actions/upload-artifact@v4
