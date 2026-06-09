@@ -38,6 +38,18 @@ Both `build.gradle` files updated. AGP and all app repositories now resolve from
 
 ---
 
+### ~~BLD-005~~ — ✅ FIXED: BuildConfig generation disabled by default in AGP 8.x
+**Fixed in commit `d4f770e`**
+AGP 8.x disables `BuildConfig` class generation by default. The app uses `BuildConfig.VERSION_NAME` in `SplashActivity` and defines a `PASTEBIN_API_KEY` `buildConfigField` in both build types. Added `buildFeatures { buildConfig true }` to `app/build.gradle`.
+
+---
+
+### ~~CQ-003~~ — ✅ FIXED: CI/CD pipeline added
+**Fixed in commit `a93f691`**
+`.github/workflows/build.yml` now builds a debug APK on every push to `master` or `claude/**` branches and on PRs. APK artifact uploaded with 14-day retention.
+
+---
+
 ## Runtime Issues
 
 ### ~~RT-001~~ — ✅ FIXED: 32-bit sqlite3 binary replaced with ARM64 static build
