@@ -1811,7 +1811,7 @@ public class MainActivity extends AppCompatActivity {
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -1898,7 +1898,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -1986,7 +1986,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -2077,7 +2077,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -2223,7 +2223,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -2302,7 +2302,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -2382,7 +2382,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -2459,7 +2459,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -2494,7 +2494,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
             finalCommand.append(System.getProperty("line.separator"));
             finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName, flagType,  name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Coolwalk__media_rec_card_enabled\", \"\" ,1,0);");
             finalCommand.append(System.getProperty("line.separator"));
-            finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName, flagType,  name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Coolwalk__opt_in _default\", \"\" ,1,0);");
+            finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName, flagType,  name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Coolwalk__opt_in_default\", \"\" ,1,0);");
             finalCommand.append(System.getProperty("line.separator"));
             finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName, flagType,  name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Coolwalk__rail_dock_enabled\", \"\" ,1,0);");
             finalCommand.append(System.getProperty("line.separator"));
@@ -2646,7 +2646,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -2681,7 +2681,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
         finalCommand.append(System.getProperty("line.separator"));
         finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName, flagType,  name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Coolwalk__media_rec_card_enabled\", \"\" ,0,0);");
         finalCommand.append(System.getProperty("line.separator"));
-        finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName, flagType,  name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Coolwalk__opt_in _default\", \"\" ,0,0);");
+        finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName, flagType,  name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Coolwalk__opt_in_default\", \"\" ,0,0);");
         finalCommand.append(System.getProperty("line.separator"));
         finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName, flagType,  name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Coolwalk__rail_dock_enabled\", \"\" ,0,0);");
         finalCommand.append(System.getProperty("line.separator"));
@@ -2785,7 +2785,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -2863,7 +2863,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -2942,7 +2942,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -3022,7 +3022,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -3098,7 +3098,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -3192,7 +3192,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -3365,7 +3365,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -3445,7 +3445,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -3520,7 +3520,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -3598,7 +3598,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -3689,7 +3689,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -3777,7 +3777,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -3854,7 +3854,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -3932,7 +3932,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
@@ -4071,7 +4071,7 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
 appendText(logs, "\n\n--  Restoring ownership of the database   --");
                 appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
 
-                if (currentPolicy.toLowerCase().equals("permissive")) {
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
                     appendText(logs, "\n\n--  Restoring SELINUX   --");
                     appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
                 }
