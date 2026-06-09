@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_main);
 
         Bundle extras = new Bundle()    ;
 
@@ -189,16 +189,6 @@ public class MainActivity extends AppCompatActivity {
 
             builder2.show();
         }
-
-
-
-
-
-
-
-
-
-        setContentView(R.layout.activity_main);
 
         ImageView revertNotificationDuration = findViewById(R.id.revert_hun_throttling);
         ImageView revertMediaNotificationDuration = findViewById(R.id.revert_media_hun);
