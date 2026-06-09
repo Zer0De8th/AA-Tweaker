@@ -583,7 +583,6 @@ public class MainActivity extends AppCompatActivity {
 
         setOnLongClickListener(materialYouButton, R.string.tutorial_materialyou, R.drawable.tutorial_materialyou);
 
-
         nospeed = findViewById(R.id.nospeed);
         noSpeedRestrictionsStatus = findViewById(R.id.speedhackstatus);
         if (load("aa_speed_hack")) {
@@ -593,22 +592,20 @@ public class MainActivity extends AppCompatActivity {
             nospeed.setText(getString(R.string.disable_tweak_string) + getString(R.string.disable_driving_restrictions));
             changeStatus(noSpeedRestrictionsStatus, 0, false);
         }
-        nospeed.setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        if (load("aa_speed_hack")) {
-                            revert("aa_speed_hack");
-                            nospeed.setText(getString(R.string.disable_tweak_string) + getString(R.string.disable_driving_restrictions));
-                            changeStatus(noSpeedRestrictionsStatus, 0, true);
-                            showRebootButton();
-                        } else {
-                            patchforspeed(0);
-                        }
-                    }
-                });
+        nospeed.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (load("aa_speed_hack")) {
+                    revert("aa_speed_hack");
+                    nospeed.setText(getString(R.string.disable_tweak_string) + getString(R.string.disable_driving_restrictions));
+                    changeStatus(noSpeedRestrictionsStatus, 0, true);
+                    showRebootButton();
+                } else {
+                    patchforspeed(0);
+                }
+            }
+        });
         setOnLongClickListener(nospeed, R.string.tutorial_disable_driving_restrictions);
-
 
         disableWeatherButton = findViewById(R.id.disableweather_button);
         disableWeatherStatus = findViewById(R.id.disableweatherstatus);
@@ -634,7 +631,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
         setOnLongClickListener(disableWeatherButton, R.string.tutorial_disable_weather_widget);
-
 
         batteryoutline = findViewById(R.id.battoutline);
         batteryOutlineStatus = findViewById(R.id.batterystatus);
