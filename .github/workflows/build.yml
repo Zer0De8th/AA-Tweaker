@@ -105,19 +105,12 @@ jobs:
           emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
           disable-animations: true
           script: |
-            set -x
-            adb install -r app/build/outputs/apk/debug/*.apk || adb install -r -t app/build/outputs/apk/debug/*.apk
-            adb logcat -c
-            PKG=sksa.aa.tweaker
-
-            echo "===== Launching SplashActivity ====="
-            adb shell am start -W -n $PKG/.SplashActivity
+            adb install -r app/build/outputs/apk/debug/*.apk || adb install -r -t app/build/outputs/apk/debug/*.apk || true
+            adb logcat -c || true
+            echo "===== Launching SplashActivity ====="; adb shell am start -W -n sksa.aa.tweaker/.SplashActivity || true
             sleep 8
-            adb shell am start -W -n $PKG/.MainActivity || true
+            echo "===== Launching MainActivity directly (where the crash is) ====="; adb shell am start -W -n sksa.aa.tweaker/.MainActivity || true
             sleep 8
-
-            echo "===== Full crash dump (AndroidRuntime + sksa.aa.tweaker) ====="
-            adb logcat -d -b crash || true
-            adb logcat -d | grep -A 200 -iE "AndroidRuntime|FATAL EXCEPTION|sksa.aa.tweaker|Caused by" || echo "No crash lines matched."
-
+            echo "===== crash buffer ====="; adb logcat -d -b crash || true
+            echo "===== main buffer (AndroidRuntime / app / Caused by) ====="; adb logcat -d -b main 2>/dev/null | grep -A 250 -iE "AndroidRuntime|FATAL EXCEPTION|sksa.aa.tweaker|Caused by" || echo "No crash lines matched."
             echo "===== Done ====="
