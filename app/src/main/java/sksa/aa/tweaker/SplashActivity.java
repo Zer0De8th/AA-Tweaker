@@ -45,7 +45,14 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        // Install the process-wide crash reporter before anything else so it
+        // catches crashes in this activity AND in MainActivity.onCreate.
+        CrashHandler.install(this);
+
         setContentView(R.layout.activity_splash);
+
+        // If the previous run crashed, surface the full stack trace now.
+        showPendingCrashIfAny();
 
         final Intent intent = new Intent(this, MainActivity.class);
 
@@ -133,6 +140,46 @@ public class SplashActivity extends AppCompatActivity {
                 });
     }
 
+
+    /** Shows the persisted stack trace from the last crash, if there is one. */
+    private void showPendingCrashIfAny() {
+        SharedPreferences prefs = getSharedPreferences(CrashHandler.PREFS, MODE_PRIVATE);
+        final String trace = prefs.getString(CrashHandler.KEY_TRACE, null);
+        if (trace == null) {
+            return;
+        }
+        String threadName = prefs.getString(CrashHandler.KEY_THREAD, "?");
+
+        // Clear it so it only shows once.
+        prefs.edit().clear().commit();
+
+        final String report = "Thread: " + threadName + "\n\n" + trace;
+
+        android.widget.TextView tv = new android.widget.TextView(this);
+        tv.setText(report);
+        tv.setTextIsSelectable(true);
+        tv.setPadding(48, 32, 48, 32);
+        tv.setTextSize(11);
+        android.widget.ScrollView scroll = new android.widget.ScrollView(this);
+        scroll.addView(tv);
+
+        new android.support.v7.app.AlertDialog.Builder(this)
+                .setTitle("Last crash report")
+                .setView(scroll)
+                .setPositiveButton("Copy", new android.content.DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(android.content.DialogInterface dialog, int which) {
+                        android.content.ClipboardManager cm =
+                                (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                        if (cm != null) {
+                            cm.setPrimaryClip(android.content.ClipData.newPlainText("crash", report));
+                            Toast.makeText(SplashActivity.this, "Crash report copied", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                })
+                .setNegativeButton("Dismiss", null)
+                .show();
+    }
 
     private void copyFile(InputStream in, OutputStream out) throws IOException {
         byte[] buffer = new byte[1024];

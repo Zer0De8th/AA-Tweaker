@@ -46,3 +46,78 @@ jobs:
           name: AA-AIO-TWEAKER-debug
           path: app/build/outputs/apk/debug/*.apk
           retention-days: 14
+
+  # Diagnostic job: launches the activities on an Android 16 (API 36) emulator
+  # and dumps any crash stack trace into the CI log. It does NOT gate the build
+  # (continue-on-error) — the emulator has no root and an x86_64-incompatible
+  # sqlite3 binary, so root-dependent tweaks can't run, but the LAUNCH crash we
+  # are chasing is a framework/UI issue that reproduces here regardless.
+  crash-diagnostics:
+    runs-on: ubuntu-latest
+    needs: build
+    continue-on-error: true
+    strategy:
+      matrix:
+        api-level: [36]
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install SDK platform 34 and build tools
+        run: |
+          sdkmanager "platforms;android-34" "build-tools;34.0.0"
+
+      - name: Grant gradlew execute permission
+        run: chmod +x gradlew
+
+      - name: Create stub local.properties
+        run: |
+          echo "PASTEBIN_API_KEY=" > local.properties
+
+      - name: Build debug APK
+        env:
+          ANDROID_HOME: ${{ env.ANDROID_SDK_ROOT }}
+        run: ./gradlew assembleDebug --no-daemon
+
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Run crash diagnostics on emulator
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          target: google_apis
+          arch: x86_64
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          script: |
+            set -x
+            adb install -r app/build/outputs/apk/debug/*.apk || adb install -r -t app/build/outputs/apk/debug/*.apk
+            adb logcat -c
+            PKG=sksa.aa.tweaker
+
+            echo "===== Launching SplashActivity ====="
+            adb shell am start -W -n $PKG/.SplashActivity
+            sleep 8
+            adb shell am start -W -n $PKG/.MainActivity || true
+            sleep 8
+
+            echo "===== Full crash dump (AndroidRuntime + sksa.aa.tweaker) ====="
+            adb logcat -d -b crash || true
+            adb logcat -d | grep -A 200 -iE "AndroidRuntime|FATAL EXCEPTION|sksa.aa.tweaker|Caused by" || echo "No crash lines matched."
+
+            echo "===== Done ====="
