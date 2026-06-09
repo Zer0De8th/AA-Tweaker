@@ -127,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
     private Button declineSmsTweak;
     private Button uxprototypeButton;
     private Button materialYouButton;
+    private Button disableWeatherButton;
+    private ImageView disableWeatherStatus;
     private boolean animationRun;
     private boolean  urlprototype;
 
@@ -581,6 +583,57 @@ public class MainActivity extends AppCompatActivity {
 
         setOnLongClickListener(materialYouButton, R.string.tutorial_materialyou, R.drawable.tutorial_materialyou);
 
+
+        nospeed = findViewById(R.id.nospeed);
+        noSpeedRestrictionsStatus = findViewById(R.id.speedhackstatus);
+        if (load("aa_speed_hack")) {
+            nospeed.setText(getString(R.string.re_enable_tweak_string) + getString(R.string.disable_driving_restrictions));
+            changeStatus(noSpeedRestrictionsStatus, 2, false);
+        } else {
+            nospeed.setText(getString(R.string.disable_tweak_string) + getString(R.string.disable_driving_restrictions));
+            changeStatus(noSpeedRestrictionsStatus, 0, false);
+        }
+        nospeed.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (load("aa_speed_hack")) {
+                            revert("aa_speed_hack");
+                            nospeed.setText(getString(R.string.disable_tweak_string) + getString(R.string.disable_driving_restrictions));
+                            changeStatus(noSpeedRestrictionsStatus, 0, true);
+                            showRebootButton();
+                        } else {
+                            patchforspeed(UserCount);
+                        }
+                    }
+                });
+        setOnLongClickListener(nospeed, R.string.tutorial_disable_driving_restrictions);
+
+
+        disableWeatherButton = findViewById(R.id.disableweather_button);
+        disableWeatherStatus = findViewById(R.id.disableweatherstatus);
+        if (load("aa_weather_disable")) {
+            disableWeatherButton.setText(getString(R.string.re_enable_tweak_string) + getString(R.string.disable_weather_widget));
+            changeStatus(disableWeatherStatus, 2, false);
+        } else {
+            disableWeatherButton.setText(getString(R.string.disable_tweak_string) + getString(R.string.disable_weather_widget));
+            changeStatus(disableWeatherStatus, 0, false);
+        }
+        disableWeatherButton.setOnClickListener(
+                new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (load("aa_weather_disable")) {
+                            revert("aa_weather_disable");
+                            disableWeatherButton.setText(getString(R.string.disable_tweak_string) + getString(R.string.disable_weather_widget));
+                            changeStatus(disableWeatherStatus, 0, true);
+                            showRebootButton();
+                        } else {
+                            disableWeatherWidget();
+                        }
+                    }
+                });
+        setOnLongClickListener(disableWeatherButton, R.string.tutorial_disable_weather_widget);
 
 
         batteryoutline = findViewById(R.id.battoutline);
@@ -1917,6 +1970,28 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
             finalCommand.append(System.getProperty("line.separator"));
             finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, extensionVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"GearSnacks__parked_gears\",\"\" ,\"999\",0);");
             finalCommand.append(System.getProperty("line.separator"));
+            finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"ContentBrowse__keyboard_force_disabled\",\"\" ,0,0);");
+            finalCommand.append(System.getProperty("line.separator"));
+            finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"ContentBrowse__sixtap_force_enabled\",\"\" ,0,0);");
+            finalCommand.append(System.getProperty("line.separator"));
+            finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"ContentBrowse__enable_speed_bump_projected\",\"\" ,0,0);");
+            finalCommand.append(System.getProperty("line.separator"));
+            finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"ContentBrowse__speedbump_force_enabled\",\"\" ,0,0);");
+            finalCommand.append(System.getProperty("line.separator"));
+            finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, intVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"ContentBrowse__drawer_default_allowed_taps_touchpad\",\"\" ,999,0);");
+            finalCommand.append(System.getProperty("line.separator"));
+            finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Dialer__speedbump_enabled\",\"\" ,0,0);");
+            finalCommand.append(System.getProperty("line.separator"));
+            finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Mesquite__speedbump_enabled\",\"\" ,0,0);");
+            finalCommand.append(System.getProperty("line.separator"));
+            finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"McFly__speedbump_enabled\",\"\" ,0,0);");
+            finalCommand.append(System.getProperty("line.separator"));
+            finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Media__projected_speedbump_enabled\",\"\" ,0,0);");
+            finalCommand.append(System.getProperty("line.separator"));
+            finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Watevra__speedbump_enabled\",\"\" ,0,0);");
+            finalCommand.append(System.getProperty("line.separator"));
+            finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Coolwalk__allow_all_inputs_kill_switch\",\"\" ,1,0);");
+            finalCommand.append(System.getProperty("line.separator"));
 
         new Thread() {
             @Override
@@ -1976,6 +2051,82 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
                     final DialogFragment notSuccessfulDialog = new NotSuccessfulDialog();
                     Bundle bundle = new Bundle();
                     bundle.putString("tweak", "aa_speed_hack");
+                    bundle.putString("log", logs.getText().toString());
+                    notSuccessfulDialog.setArguments(bundle);
+                    notSuccessfulDialog.show(getSupportFragmentManager(), "NotSuccessfulDialog");
+                }
+            }
+        }.start();
+    }
+
+    public void disableWeatherWidget() {
+        final TextView logs = initiateLogsText();
+
+        final ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "",
+                getString(R.string.tweak_loading), true);
+
+        final StringBuilder finalCommand = new StringBuilder();
+
+        finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Weather__enabled\",\"\" ,0,0);");
+        finalCommand.append(System.getProperty("line.separator"));
+        finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Weather__icon_enabled\",\"\" ,0,0);");
+        finalCommand.append(System.getProperty("line.separator"));
+        finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Weather__preinstalled_frx_toggle_enabled\",\"\" ,0,0);");
+        finalCommand.append(System.getProperty("line.separator"));
+
+        new Thread() {
+            @Override
+            public void run() {
+                String path = getApplicationInfo().dataDir;
+                suitableMethodFound = true;
+                killps(logs);
+                String currentOwner = runSuWithCmd("stat -c \"%U\" /data/data/com.google.android.gms/databases/phenotype.db").getInputStreamLog();
+                String currentPolicy = gainOwnership(logs);
+
+                if (suitableMethodFound) {
+                    appendText(logs, "\n\n--  run SQL method   --");
+                    appendText(logs, runSuWithCmd(
+                            path + "/sqlite3 -batch /data/data/com.google.android.gms/databases/phenotype.db " +
+                                    "'DROP TRIGGER IF EXISTS aa_weather_disable;\n" + finalCommand + "'"
+                    ).getStreamLogsWithLabels());
+
+                    appendText(logs, runSuWithCmd(
+                            path + "/sqlite3 -batch /data/data/com.google.android.gms/databases/phenotype.db " +
+                                    "'CREATE TRIGGER aa_weather_disable AFTER DELETE\n" +
+                                    "On FlagOverrides\n" +
+                                    "BEGIN\n" + finalCommand + "END;'\n"
+                    ).getStreamLogsWithLabels());
+                    if (runSuWithCmd(path + "/sqlite3 -batch /data/data/com.google.android.gms/databases/phenotype.db " + "'SELECT name FROM sqlite_master WHERE type=\"trigger\" AND name=\"aa_weather_disable\";'").getInputStreamLog().length() <= 4) {
+                        suitableMethodFound = false;
+                    } else {
+                        appendText(logs, "\n--  end SQL method   --");
+                        save(true, "aa_weather_disable");
+                        new Handler(Looper.getMainLooper()).post(new Runnable() {
+                            @Override
+                            public void run() {
+                                changeStatus(disableWeatherStatus, 1, true);
+                                showRebootButton();
+                                disableWeatherButton.setText(getString(R.string.re_enable_tweak_string) + getString(R.string.disable_weather_widget));
+                            }
+                        });
+                    }
+                }
+                dialog.dismiss();
+
+                appendText(logs, "\n\n--  restoring Google Play Services   --");
+                appendText(logs, runSuWithCmd("pm enable com.google.android.gms").getStreamLogsWithLabels());
+
+                appendText(logs, "\n\n--  Restoring ownership of the database   --");
+                appendText(logs, runSuWithCmd("chown " + currentOwner + " /data/data/com.google.android.gms/databases/phenotype.db").getStreamLogsWithLabels());
+
+                if (!currentPolicy.toLowerCase().equals("permissive")) {
+                    appendText(logs, "\n\n--  Restoring SELINUX   --");
+                    appendText(logs, runSuWithCmd("setenforce 1").getStreamLogsWithLabels());
+                }
+                if (!suitableMethodFound) {
+                    final DialogFragment notSuccessfulDialog = new NotSuccessfulDialog();
+                    Bundle bundle = new Bundle();
+                    bundle.putString("tweak", "aa_weather_disable");
                     bundle.putString("log", logs.getText().toString());
                     notSuccessfulDialog.setArguments(bundle);
                     notSuccessfulDialog.show(getSupportFragmentManager(), "NotSuccessfulDialog");

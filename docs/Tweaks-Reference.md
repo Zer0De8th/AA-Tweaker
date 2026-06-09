@@ -15,8 +15,8 @@ All tweaks apply SQLite overrides to Google Play Services `phenotype.db`. A devi
 
 | Pref Key | Display Name | Description | Last Known Status |
 |----------|-------------|-------------|-------------------|
-| `aa_speed_hack` | Disable Speed Restrictions | Removes the limit that hides message previews while driving | Unknown |
-| `aa_six_tap` | Disable Six Tap Limit | Removes the banner after 6 screen taps asking driver to pay attention | Deprecated (removed from UI) |
+| `aa_speed_hack` | Disable Driving Restrictions | Sets GPS/wheel speed thresholds to 999 km/h (always "parked"), unlocks keyboard, disables all module speedbumps (dialer, media, maps, calendar), and bypasses Coolwalk input kill switch | Likely Working — enhanced with additional speedbump flags June 2026 |
+| `aa_six_tap` | Disable Six Tap Limit | Removes the banner after 6 screen taps asking driver to pay attention | Deprecated (removed from UI; flags now included in aa_speed_hack) |
 | `aa_startup_policy` | Startup Policy | Modifies the startup behavior policy flags | Unknown |
 
 ---
@@ -84,6 +84,14 @@ All tweaks apply SQLite overrides to Google Play Services `phenotype.db`. A devi
 | Pref Key | Display Name | Description | Last Known Status |
 |----------|-------------|-------------|-------------------|
 | `aa_activate_assistant_tips` | Assistant Tips | Shows assistant usage tips | Unknown |
+
+---
+
+## UI / Home Screen
+
+| Pref Key | Display Name | Description | Last Known Status |
+|----------|-------------|-------------|-------------------|
+| `aa_weather_disable` | Disable Weather Widget | Sets `Weather__enabled`, `Weather__icon_enabled`, and `Weather__preinstalled_frx_toggle_enabled` to 0 to hide the weather card from the AA home screen | Unknown — Google disabled the weather data backend server-side in AA 14.x+; flags may have no effect on current versions |
 
 ---
 

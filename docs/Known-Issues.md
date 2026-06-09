@@ -105,3 +105,11 @@ All 26 tweak keys are reset to `false` on each launch; state is read from live D
 
 ### CQ-004 — No user-facing error detail on failed tweak
 **Severity**: Medium — `NotSuccessfulDialog` shows no actionable information when a tweak fails.
+
+---
+
+## Feature Gaps
+
+### RT-007 — No phenotype flag found for safety break / driving break feature
+**Severity**: Low (feature gap)
+**Detail**: The Android Auto "pay attention to the road" safety pause (tap-rate limiter introduced AA 9.x+) has no known phenotype.db flag override as of June 2026. Exhaustive research across all known AA-Tweaker forks, XDA threads, and AA-Phenotype-Patcher found zero references to a `SafetyPause__`, `driving_break`, `break_reminder`, or equivalent flag. The feature appears to be enforced client-side inside the AA APK rather than via a GMS phenotype flag. Finding the flag (if it exists) requires live device investigation: decompile the AA APK and search for `Flags.getBoolean()` calls near "safety"/"pause"/"break" strings, or dump `phenotype.db` on a rooted device during a safety pause event.

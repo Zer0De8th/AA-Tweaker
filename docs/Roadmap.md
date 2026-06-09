@@ -32,7 +32,7 @@
 - [ ] **Multi-ABI sqlite3 support** — bundle ARM32 + ARM64 and select at runtime via `Build.SUPPORTED_ABIS`
 - [ ] **Audit all feature flags** against Android Auto 10.x+ (see `docs/Tweaks-Reference.md` — all currently marked Unknown)
 - [ ] **Remove or deprecate** flags that no longer exist in current AA
-- [ ] **Research new flags** introduced in AA 9.x–11.x
+- [x] **Research new flags** introduced in AA 9.x–11.x — added Disable Driving Restrictions (enhanced speedbump bypass) and Disable Weather Widget tweaks June 2026
 - [ ] **Fix Coolwalk activate/deactivate logic** — Coolwalk is now the default UI in recent AA; logic may need reversal
 - [ ] **Audit Material You and Vertical Bar flags** — high risk of being stale
 

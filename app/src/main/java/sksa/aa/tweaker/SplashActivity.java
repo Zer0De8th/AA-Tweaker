@@ -82,6 +82,8 @@ public class SplashActivity extends AppCompatActivity {
         editor.putBoolean("uxprototype_tweak", false);
         editor.putBoolean("aa_material_you", false);
         editor.putBoolean("aa_vertical_bar", false);
+        editor.putBoolean("aa_speed_hack", false);
+        editor.putBoolean("aa_weather_disable", false);
         editor.commit();
 
         requestLatest();

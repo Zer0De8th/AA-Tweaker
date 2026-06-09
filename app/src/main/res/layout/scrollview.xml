@@ -907,7 +907,47 @@
                     app:layout_constraintTop_toTopOf="@id/materialyoutweak"
                     app:layout_constraintBottom_toBottomOf="@id/materialyoutweak" />
 
+                <Button
+                    android:id="@+id/nospeed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/ButtonStyle"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:layout_constraintEnd_toStartOf="@id/message_autoread_tweak_status"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/materialyoutweak" />
 
+                <ImageView
+                    android:id="@+id/speedhackstatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_check_circle_24"
+                    android:layout_marginEnd="3dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/nospeed"
+                    app:layout_constraintBottom_toBottomOf="@id/nospeed" />
+
+                <Button
+                    android:id="@+id/disableweather_button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    style="@style/ButtonStyle"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:layout_constraintEnd_toStartOf="@id/message_autoread_tweak_status"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/nospeed" />
+
+                <ImageView
+                    android:id="@+id/disableweatherstatus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_baseline_check_circle_24"
+                    android:layout_marginEnd="3dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/disableweather_button"
+                    app:layout_constraintBottom_toBottomOf="@id/disableweather_button" />
 
 
 

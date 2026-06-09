@@ -154,4 +154,8 @@ WARNING: This tweak has not been extensively tested and could potentially break 
     <string name="tutorial_inertial_scroll">This tweak will override the default scrolling behaviour of Android Auto making so that it doesn\'t stop page by page.</string>
     <string name="vertical_bar_tweak">Vertical Bar</string>
     <string name="tutorial_vertical_bar_tweak">This tweak will force the bar to be vertical. This tweak will only work on Coolwalk UI.</string>
+    <string name="disable_driving_restrictions">driving restrictions</string>
+    <string name="tutorial_disable_driving_restrictions">Removes all speed and tap restrictions while driving. Android Auto will behave as if the car is always parked, keeping menus, keyboard, and scrolling fully accessible at any speed. Also disables per-module speedbumps (dialer, media, maps, calendar).</string>
+    <string name="disable_weather_widget">weather widget</string>
+    <string name="tutorial_disable_weather_widget">Hides the weather widget from the Android Auto home screen. Note: Google disabled the server-side weather data backend in AA 14.x+ — this flag may have no visible effect on recent versions.</string>
 </resources>
