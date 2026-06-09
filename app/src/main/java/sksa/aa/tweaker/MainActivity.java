@@ -1565,80 +1565,67 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.copy:
-
-                final String title = "log";
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                StrictMode.setThreadPolicy(policy);
-                final URL[] string = {null};
-                new Handler(Looper.getMainLooper()).post(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            final ClipboardManager clipboard = (ClipboardManager)
-                                    getSystemService(Context.CLIPBOARD_SERVICE);
-                            TextView textView = findViewById(R.id.logs);
-                            URL newstring = Pastebin.pastePaste(BuildConfig.PASTEBIN_API_KEY, String.valueOf(textView.getText()), title);
-                            Toast.makeText(getApplicationContext(), getString(R.string.copied_pastebin), Toast.LENGTH_LONG).show();
-                            ClipData clip = ClipData.newPlainText("logs", newstring.toString());
-                            clipboard.setPrimaryClip(clip);
-                        } catch (PasteException e) {
-                            e.printStackTrace();
-                            final ClipboardManager clipboard = (ClipboardManager)
-                                    getSystemService(Context.CLIPBOARD_SERVICE);
-                            TextView textView = findViewById(R.id.logs);
-                            Toast.makeText(getApplicationContext(), getString(R.string.log_copied), Toast.LENGTH_LONG).show();
-                            ClipData clip = ClipData.newPlainText("logs", textView.getText());
-                            clipboard.setPrimaryClip(clip);
-                        } catch (RuntimeException e) {
-                            e.printStackTrace();
-                            final ClipboardManager clipboard = (ClipboardManager)
-                                    getSystemService(Context.CLIPBOARD_SERVICE);
-
-                            Toast.makeText(getApplicationContext(), getString(R.string.log_copied), Toast.LENGTH_LONG).show();
-                            Toast.makeText(getApplicationContext(), getString(R.string.log_copied), Toast.LENGTH_LONG).show();
-                            TextView textView = findViewById(R.id.logs);
-
-                            ClipData clip = ClipData.newPlainText("logs", textView.getText());
-                            clipboard.setPrimaryClip(clip);
-                        }
+        int itemId = item.getItemId();
+        if (itemId == R.id.copy) {
+            final String title = "log";
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+            final URL[] string = {null};
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        final ClipboardManager clipboard = (ClipboardManager)
+                                getSystemService(Context.CLIPBOARD_SERVICE);
+                        TextView textView = findViewById(R.id.logs);
+                        URL newstring = Pastebin.pastePaste(BuildConfig.PASTEBIN_API_KEY, String.valueOf(textView.getText()), title);
+                        Toast.makeText(getApplicationContext(), getString(R.string.copied_pastebin), Toast.LENGTH_LONG).show();
+                        ClipData clip = ClipData.newPlainText("logs", newstring.toString());
+                        clipboard.setPrimaryClip(clip);
+                    } catch (PasteException e) {
+                        e.printStackTrace();
+                        final ClipboardManager clipboard = (ClipboardManager)
+                                getSystemService(Context.CLIPBOARD_SERVICE);
+                        TextView textView = findViewById(R.id.logs);
+                        Toast.makeText(getApplicationContext(), getString(R.string.log_copied), Toast.LENGTH_LONG).show();
+                        ClipData clip = ClipData.newPlainText("logs", textView.getText());
+                        clipboard.setPrimaryClip(clip);
+                    } catch (RuntimeException e) {
+                        e.printStackTrace();
+                        final ClipboardManager clipboard = (ClipboardManager)
+                                getSystemService(Context.CLIPBOARD_SERVICE);
+                        Toast.makeText(getApplicationContext(), getString(R.string.log_copied), Toast.LENGTH_LONG).show();
+                        TextView textView = findViewById(R.id.logs);
+                        ClipData clip = ClipData.newPlainText("logs", textView.getText());
+                        clipboard.setPrimaryClip(clip);
                     }
-                });
-
-
-
-
-                break;
-
-            case R.id.about:
-                DialogFragment aboutDialog = new AboutDialog();
-                aboutDialog.show(getSupportFragmentManager(), "AboutDialog");
-                break;
-
-            case R.id.revert_everything:
-                final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
-                builder.setMessage(getString(R.string.revert_everything_dialog))
-                        .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                getAndRemoveOptionsSelected();
-                            }
-                        })
-                        .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.cancel();
-                            }
-                        });
-                builder.setCancelable(true);
-                android.support.v7.app.AlertDialog Alert1 = builder.create();
-                Alert1.show();
-                break;
-            case R.id.aa_settings:
-                String packageName = "com.google.android.projection.gearhead";
-                openApp(getApplicationContext(), packageName);
-
-            default:
-                return super.onOptionsItemSelected(item);
+                }
+            });
+        } else if (itemId == R.id.about) {
+            DialogFragment aboutDialog = new AboutDialog();
+            aboutDialog.show(getSupportFragmentManager(), "AboutDialog");
+        } else if (itemId == R.id.revert_everything) {
+            final android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(MainActivity.this);
+            builder.setMessage(getString(R.string.revert_everything_dialog))
+                    .setPositiveButton(getString(android.R.string.ok), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            getAndRemoveOptionsSelected();
+                        }
+                    })
+                    .setNegativeButton(getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            builder.setCancelable(true);
+            android.support.v7.app.AlertDialog Alert1 = builder.create();
+            Alert1.show();
+        } else if (itemId == R.id.aa_settings) {
+            String packageName = "com.google.android.projection.gearhead";
+            openApp(getApplicationContext(), packageName);
+            return super.onOptionsItemSelected(item);
+        } else {
+            return super.onOptionsItemSelected(item);
         }
         return true;
     }

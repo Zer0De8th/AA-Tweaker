@@ -74,7 +74,6 @@ dependencies {
     // UI libs — migrated from jcenter to JitPack
     // Tag on GitHub is "v.1.0.3" (dot after v)
     implementation 'com.github.romandanylyk:PageIndicatorView:v.1.0.3'
-    implementation 'com.github.HeinrichReimer:android-issue-reporter:1.4.2'
     // RMSwitch was jcenter-only; source is RiccardoMoro/RMSwitch, tag v1.2.2
     implementation 'com.github.RiccardoMoro:RMSwitch:v1.2.2'
 
@@ -83,6 +82,4 @@ dependencies {
 
     // JitPack — bravobit/jPastebin has no tags, pinned to latest commit
     implementation 'com.github.bravobit:jPastebin:2a05d9a'
-    // BottomDialog.java uses com.github.javiersantos.bottomdialogs.R — use original repo
-    implementation 'com.github.javiersantos:BottomDialogs:1.2.1'
 }
