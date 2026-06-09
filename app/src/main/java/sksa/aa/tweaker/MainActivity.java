@@ -603,7 +603,7 @@ public class MainActivity extends AppCompatActivity {
                             changeStatus(noSpeedRestrictionsStatus, 0, true);
                             showRebootButton();
                         } else {
-                            patchforspeed(UserCount);
+                            patchforspeed(0);
                         }
                     }
                 });
