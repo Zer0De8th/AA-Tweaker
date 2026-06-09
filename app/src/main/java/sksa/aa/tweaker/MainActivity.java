@@ -231,16 +231,21 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        TextView logs = initiateLogsText();
+        final TextView logs = initiateLogsText();
 
-        appendText(logs, runSuWithCmd(
-                path + "/sqlite3 -batch /data/data/com.google.android.gms/databases/phenotype.db " +
-                        "'SELECT * FROM FlagOverrides;'"
-        ).getStreamLogsWithLabels());
-        appendText(logs, runSuWithCmd(
-                path + "/sqlite3 -batch /data/data/com.google.android.gms/databases/phenotype.db " +
-                        "'SELECT * FROM sqlite_master WHERE type=\"trigger\";'"
-        ).getStreamLogsWithLabels());
+        new Thread() {
+            @Override
+            public void run() {
+                appendText(logs, runSuWithCmd(
+                        path + "/sqlite3 -batch /data/data/com.google.android.gms/databases/phenotype.db " +
+                                "'SELECT * FROM FlagOverrides;'"
+                ).getStreamLogsWithLabels());
+                appendText(logs, runSuWithCmd(
+                        path + "/sqlite3 -batch /data/data/com.google.android.gms/databases/phenotype.db " +
+                                "'SELECT * FROM sqlite_master WHERE type=\"trigger\";'"
+                ).getStreamLogsWithLabels());
+            }
+        }.start();
 
 
         animationRun = false;
@@ -4126,28 +4131,21 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
     }
 
     public void loadStatus(final String path) {
-
-        final ProgressDialog dialog = ProgressDialog.show(MainActivity.this, "",
-                getString(R.string.loading), true);
-
-        runOnUiThread(new Runnable() {
+        new Thread() {
             @Override
             public void run() {
                 String get_names = runSuWithCmd(
                         path + "/sqlite3 -batch /data/data/com.google.android.gms/databases/phenotype.db " +
                                 "'SELECT name FROM sqlite_master WHERE type=\"trigger\" AND tbl_name=\"FlagOverrides\";" +
                                 "SELECT name FROM sqlite_master WHERE type=\"trigger\" AND tbl_name=\"Flags\";" +
-
                                 "SELECT name FROM sqlite_master WHERE type=\"trigger\" AND tbl_name=\"Flags\" AND name=\"after_delete\";" +
                                 "SELECT name FROM sqlite_master WHERE type=\"trigger\" AND tbl_name=\"Flags\" AND name=\"aa_patched_apps\";'").getInputStreamLog();
-                String[] lines = get_names.split(System.getProperty("line.separator"));
+                final String[] lines = get_names.split(System.getProperty("line.separator"));
                 for (int i = 0; i < lines.length; i++) {
                     save(true, lines[i]);
                 }
-                dialog.dismiss();
             }
-        });
-
+        }.start();
     }
 
     public void getAndRemoveOptionsSelected() {
