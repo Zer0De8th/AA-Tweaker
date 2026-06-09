@@ -68,6 +68,10 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean temp;
 
+    // Guards the one-time status re-render after the async loadStatus() finishes.
+    // Persisted across recreate() so it only fires once per launch (no loop).
+    private boolean tweakStatusRefreshed;
+
     private static Context mContext;
     private ImageView noSpeedRestrictionsStatus;
     private ImageView taplimitstatus;
@@ -149,6 +153,10 @@ public class MainActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (savedInstanceState != null) {
+            tweakStatusRefreshed = savedInstanceState.getBoolean("tweakStatusRefreshed", false);
+        }
 
         Bundle extras = new Bundle()    ;
 
@@ -1709,6 +1717,12 @@ public class MainActivity extends AppCompatActivity {
     public float loadFloat(String key) {
         SharedPreferences sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         return sharedPreferences.getFloat(key, 0);
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean("tweakStatusRefreshed", tweakStatusRefreshed);
     }
 
     @Override
@@ -4288,8 +4302,29 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
                                 "SELECT name FROM sqlite_master WHERE type=\"trigger\" AND tbl_name=\"Flags\" AND name=\"after_delete\";" +
                                 "SELECT name FROM sqlite_master WHERE type=\"trigger\" AND tbl_name=\"Flags\" AND name=\"aa_patched_apps\";'").getInputStreamLog();
                 final String[] lines = get_names.split(System.getProperty("line.separator"));
+                boolean foundActiveTweak = false;
                 for (int i = 0; i < lines.length; i++) {
                     save(true, lines[i]);
+                    if (lines[i] != null && !lines[i].trim().isEmpty()) {
+                        foundActiveTweak = true;
+                    }
+                }
+                // The tweak status icons are drawn synchronously in onCreate, before
+                // this background DB read finishes. After a reboot that race makes the
+                // icons show "disabled" even though the triggers are still installed —
+                // and the first tap then hits the revert branch (the "two taps to
+                // re-apply" symptom). Now that the real state is in SharedPreferences,
+                // re-render once so the icons match the database.
+                if (foundActiveTweak && !tweakStatusRefreshed && !isFinishing() && !isDestroyed()) {
+                    tweakStatusRefreshed = true;
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (!isFinishing() && !isDestroyed()) {
+                                recreate();
+                            }
+                        }
+                    });
                 }
             }
         }.start();

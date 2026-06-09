@@ -92,6 +92,21 @@ All 26 tweak keys are reset to `false` on each launch; state is read from live D
 
 ---
 
+### ~~RT-009~~ — ✅ FIXED: Tweak icons show red after reboot; first tap reverts ("two taps to re-apply")
+**Severity**: Medium — misleading UI that can silently undo an applied tweak.
+
+**Symptom**: After a reboot, all tweak icons show **red/disabled** even though the patches are still installed in `phenotype.db`. Tapping a button once then *reverts* the tweak, and a second tap re-applies it — so it takes two taps to "re-apply" something that was never actually off.
+
+**Root cause**: A race between `SplashActivity` and `MainActivity`:
+1. `SplashActivity` resets every tweak key in SharedPreferences to `false` on launch.
+2. `MainActivity.onCreate` calls `loadStatus(path)`, which reads the installed triggers from the DB and sets the matching keys back to `true` — but on a **background thread**.
+3. The per-button status icons are rendered **synchronously** later in `onCreate`, reading `load(key)` *before* the background thread has written the real values → every icon reads the just-reset `false` → red.
+4. The click handler reads `load(key)` at tap time (after the background read finished), sees `true`, and takes the **revert** branch — hence the misleading first tap. The patches themselves were always correctly applied (confirmed via `SELECT * FROM sqlite_master WHERE type='trigger'`).
+
+**Fix**: `loadStatus()` now records whether any active trigger was found and, once the real state has been written to SharedPreferences, calls `recreate()` exactly once (guarded by a `tweakStatusRefreshed` flag persisted in `onSaveInstanceState`, so it never loops). The re-created `onCreate` reads the already-correct preferences and renders every icon to match the database — reusing all existing rendering logic, including the numeric (bitrate/HUN) and paired (Coolwalk) special cases. `SplashActivity` is not in the `recreate()` path, so the preferences written by the first `loadStatus()` survive.
+
+---
+
 ### ~~RT-008~~ — ✅ FIXED: MainActivity force-closed on launch (PageIndicatorView AndroidX mismatch)
 **Severity**: Critical — app was unusable; MainActivity crashed every time it opened (e.g. right after tapping "Proceed" on the splash screen).
 
