@@ -31,6 +31,7 @@ import sksa.aa.tweaker.Utils.Version;
 
 import static sksa.aa.tweaker.MainActivity.runSuWithCmd;
 
+
 public class SplashActivity extends AppCompatActivity {
 
 
@@ -49,7 +50,7 @@ public class SplashActivity extends AppCompatActivity {
         final Intent intent = new Intent(this, MainActivity.class);
 
         final NoRootDialog noRootDialog = new NoRootDialog();
-        final StreamLogs isDeviceRooted =  runSuWithCmd("echo 1");
+        final StreamLogs[] rootResult = {new StreamLogs()};
 
         copyAssets();
 
@@ -89,6 +90,15 @@ public class SplashActivity extends AppCompatActivity {
 
         final Button continueButton = findViewById(R.id.proceed_button);
         continueButton.setEnabled(false);
+
+        // Root check runs off the main thread so it never blocks the UI.
+        new Thread() {
+            @Override
+            public void run() {
+                rootResult[0] = runSuWithCmd("echo 1");
+            }
+        }.start();
+
         Log.v("sksa.aa.tweaker", "Engaging countdown");
         new CountDownTimer(5000, 10) {
             public void onTick(long millisUntilFinished) {
@@ -107,7 +117,7 @@ public class SplashActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (isDeviceRooted.getInputStreamLog().equals("1")) {
+                        if (rootResult[0].getInputStreamLog().equals("1")) {
                             if (newVersionName != null) {
                                 intent.putExtra("NewVersionName", newVersionName);
                             }
@@ -161,7 +171,8 @@ public class SplashActivity extends AppCompatActivity {
             } catch (IOException e) {
                 Log.e("sksa.aa.tweaker", "Failed to copy asset file: sqlite3", e);
             }
-            Log.v("sksa.aa.tweaker", runSuWithCmd("chmod 777 " + path + "/sqlite3").getStreamLogsWithLabels());
+            new File(path, "sqlite3").setExecutable(true, false);
+            Log.v("sksa.aa.tweaker", "sqlite3 copied and marked executable");
 
     }
 

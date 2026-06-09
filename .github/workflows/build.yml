@@ -92,24 +92,56 @@ jobs:
           cat > emulator_test.sh << 'SCRIPT'
           #!/usr/bin/env bash
           set -e
+
           APK=$(find app/build/outputs/apk/debug -name "*.apk" | head -1)
           echo "Installing APK: $APK"
           adb install "$APK"
-          echo "Launching SplashActivity..."
+
+          # Enable root on emulator (google_apis images support this)
+          adb root || echo "adb root not available, continuing as non-root"
+          sleep 2
+
+          # Clear logcat so we only capture app startup
+          adb logcat -c
+
+          # ── Test 1: SplashActivity ──────────────────────────────────────────
+          echo "=== TEST 1: SplashActivity launch ==="
           adb shell am start -W -n sksa.aa.tweaker/.SplashActivity
-          sleep 10
+          sleep 2
+          if adb logcat -d | grep -q "FATAL EXCEPTION"; then
+            echo "CRASH in SplashActivity"
+            adb logcat -d > full_logcat.txt
+            cat full_logcat.txt
+            exit 1
+          fi
+          echo "SplashActivity: OK"
+
+          # Wait for 5-second countdown, then tap the proceed button
+          sleep 6
+          adb shell input keyevent 23   # DPAD_CENTER / confirm
+          sleep 2
+
+          # ── Test 2: MainActivity launch ────────────────────────────────────
+          echo "=== TEST 2: MainActivity direct launch ==="
+          adb logcat -c
+          adb shell am start -W -n sksa.aa.tweaker/.MainActivity
+          sleep 8
+
           echo "Capturing logcat..."
           adb logcat -d > full_logcat.txt
-          grep -E "AndroidRuntime|FATAL EXCEPTION|sksa\.aa\.tweaker" full_logcat.txt > crash_log.txt || true
+          grep -E "AndroidRuntime|FATAL EXCEPTION|sksa\.aa\.tweaker" \
+               full_logcat.txt > crash_log.txt || true
+
           echo "=== RELEVANT LOG LINES ==="
           cat crash_log.txt
           echo "=== END ==="
+
           if grep -q "FATAL EXCEPTION" full_logcat.txt; then
             echo "CRASH DETECTED — full logcat follows:"
             cat full_logcat.txt
             exit 1
           fi
-          echo "No fatal crash detected."
+          echo "No fatal crash detected in either activity."
           SCRIPT
           chmod +x emulator_test.sh
 
