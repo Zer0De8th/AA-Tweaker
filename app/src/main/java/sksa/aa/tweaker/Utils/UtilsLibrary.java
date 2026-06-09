@@ -21,7 +21,7 @@ public class UtilsLibrary {
     static Drawable createButtonBackgroundDrawable(@NonNull Context context, int fillColor) {
         int buttonCornerRadius = dpToPixels(context, 2);
         TypedValue v = new TypedValue();
-        boolean hasAttribute = context.getTheme().resolveAttribute(com.github.javiersantos.bottomdialogs.R.attr.colorControlHighlight, v, true);
+        boolean hasAttribute = context.getTheme().resolveAttribute(android.R.attr.colorControlHighlight, v, true);
         int rippleColor = hasAttribute ? v.data : Color.parseColor("#88CCCCCC");
         return createButtonBackgroundDrawableLollipop(fillColor, rippleColor, buttonCornerRadius);
     }
