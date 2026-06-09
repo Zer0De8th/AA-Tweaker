@@ -107,10 +107,10 @@ jobs:
           script: |
             adb install -r app/build/outputs/apk/debug/*.apk || adb install -r -t app/build/outputs/apk/debug/*.apk || true
             adb logcat -c || true
-            echo "===== Launching SplashActivity ====="; adb shell am start -W -n sksa.aa.tweaker/.SplashActivity || true
-            sleep 8
-            echo "===== Launching MainActivity directly (where the crash is) ====="; adb shell am start -W -n sksa.aa.tweaker/.MainActivity || true
-            sleep 8
-            echo "===== crash buffer ====="; adb logcat -d -b crash || true
-            echo "===== main buffer (AndroidRuntime / app / Caused by) ====="; adb logcat -d -b main 2>/dev/null | grep -A 250 -iE "AndroidRuntime|FATAL EXCEPTION|sksa.aa.tweaker|Caused by" || echo "No crash lines matched."
-            echo "===== Done ====="
+            echo "##### LAUNCH MainActivity directly (this is the activity that crashes on-device) #####"; adb shell am start -W -n sksa.aa.tweaker/.MainActivity 2>&1 || true
+            sleep 10
+            echo "##### PROCESS ALIVE CHECK (empty pid = process died / crashed) #####"; adb shell pidof sksa.aa.tweaker 2>&1 || echo "PID: <none>"
+            echo "##### CRASH BUFFER #####"; adb logcat -d -b crash 2>&1 || true
+            echo "##### AndroidRuntime FATAL lines #####"; adb logcat -d 2>&1 | grep -iE "E AndroidRuntime|FATAL EXCEPTION|Process: sksa" || echo "NO_FATAL_FOUND"
+            echo "##### App-thrown stack frames (sksa.aa.tweaker.*) #####"; adb logcat -d 2>&1 | grep -E "at sksa\.aa\.tweaker|sksa\.aa\.tweaker.*Exception|AndroidRuntime.*sksa" || echo "NO_APP_FRAMES"
+            echo "##### DONE #####"
