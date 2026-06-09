@@ -130,6 +130,24 @@ Caused by: java.lang.NoClassDefFoundError:
 
 ---
 
+### RT-010 — "Voice only while driving" (Maps keyboard) is NOT fixable via phenotype
+**Severity**: Feature gap — the "Disable Driving Restrictions" tweak cannot deliver Maps keyboard typing while moving.
+
+**Detail**: Google Maps shows "Voice only while driving" and refuses keyboard input because the **head unit** sends a driving-restriction bitmask over the Android Auto protocol — `DrivingStatusData.NO_KEYBOARD_INPUT` (bit 2) — and Maps obeys it. This is computed from the car's real speed/parking-brake signal and transmitted by the car, so **no phone-side phenotype override changes it**. `CarSensorParameters__max_parked_speed_*` only affects how the phone interprets sensors it receives; `ContentBrowse__keyboard_force_disabled` governs gearhead's own content-browser keyboard, not the protocol-level restriction Maps reads. Confirmed across the AA protocol reconstruction (`mossyhub/openautolink` `sensors.proto`), the `mrmees/open-android-auto` flag catalog (no Maps/gms.car keyboard flag exists), and community reports (2023–2026). Only real fixes: car-side module coding (e.g. VAG via VCDS/OBDeleven), an AA bridge/dongle that spoofs the sensor stream as "parked," or accept voice-only.
+
+**Action**: The `disable_driving_restrictions` tweak description in `strings.xml` overstates this ("keyboard… fully accessible at any speed") — it should be corrected to note Maps search typing is head-unit-enforced and unaffected.
+
+---
+
+### RT-011 — Legacy `Weather__enabled` flags no longer remove the Coolwalk/Hero dashboard weather tile
+**Severity**: Medium — the "Disable Weather Widget" tweak was ineffective on AA 12.x+.
+
+**Detail**: The `aa_weather_disable` tweak set `Weather__enabled` / `Weather__icon_enabled` / `Weather__preinstalled_frx_toggle_enabled = 0`, but the dashboard temperature tile still shows on current Android Auto. Those are the AA 8.x-era weather keys; Google migrated the dashboard tile to the **"Hero"** portrait dashboard engine. The modern levers (gearhead, boolean) are `HeroFeature__show_weather_by_default_on_portrait_kill_switch` (kill switch, default true → set 0) and `Weather__enable_on_all_screens` (→ 0). **Added both to `disableWeatherWidget()`** as of June 2026.
+
+**Caveat (still possibly server-gated)**: 9to5Google reported the weather card is partly server/display-geometry driven — the "enable on all screens" flag has done nothing for some users, and the card broke server-side for everyone in April 2025. The Hero kill switch is the best available lever but may not fully suppress the tile if Google is gating it server-side. Needs on-device verification.
+
+---
+
 ## Code Quality Issues
 
 ### CQ-001 — Monolithic MainActivity (~250KB)

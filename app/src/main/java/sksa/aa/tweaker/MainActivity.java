@@ -2083,6 +2083,13 @@ appendText(logs, "\n\n--  Restoring ownership of the database   --");
         finalCommand.append(System.getProperty("line.separator"));
         finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Weather__preinstalled_frx_toggle_enabled\",\"\" ,0,0);");
         finalCommand.append(System.getProperty("line.separator"));
+        // Modern (Coolwalk/Hero, AA 12.x+) weather-card kill switches. The legacy
+        // Weather__enabled flags above no longer drive the dashboard tile on current
+        // Android Auto; the tile is now part of the "Hero" portrait dashboard.
+        finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"HeroFeature__show_weather_by_default_on_portrait_kill_switch\",\"\" ,0,0);");
+        finalCommand.append(System.getProperty("line.separator"));
+        finalCommand.append("INSERT OR REPLACE INTO FlagOverrides (packageName,  flagType, name, user, boolVal, committed) VALUES (\"com.google.android.projection.gearhead\",  0,\"Weather__enable_on_all_screens\",\"\" ,0,0);");
+        finalCommand.append(System.getProperty("line.separator"));
 
         new Thread() {
             @Override
