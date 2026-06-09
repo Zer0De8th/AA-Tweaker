@@ -98,20 +98,14 @@ public class SplashActivity extends AppCompatActivity {
             @Override
             public void run() {
                 rootResult[0] = runSuWithCmd("echo 1");
-            }
-        }.start();
-
-        Log.v("sksa.aa.tweaker", "Engaging countdown");
-        new CountDownTimer(5000, 10) {
-            public void onTick(long millisUntilFinished) {
-                int secondsRemaining = (int) ( 1 + (millisUntilFinished/1000));
-                continueButton.setText(getString(R.string.proceed) + " (" + secondsRemaining + ")");
-            }
-
-            @Override
-            public void onFinish() {
-                continueButton.setEnabled(true);
-                continueButton.setText(R.string.proceed);
+                // Enable the button as soon as we know root status
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        continueButton.setEnabled(true);
+                        continueButton.setText(R.string.proceed);
+                    }
+                });
             }
         }.start();
 
@@ -119,14 +113,21 @@ public class SplashActivity extends AppCompatActivity {
                 new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (rootResult[0].getInputStreamLog().equals("1")) {
-                            if (newVersionName != null) {
-                                intent.putExtra("NewVersionName", newVersionName);
+                        try {
+                            if (rootResult[0].getInputStreamLog().equals("1")) {
+                                if (newVersionName != null) {
+                                    intent.putExtra("NewVersionName", newVersionName);
+                                }
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                noRootDialog.show(getSupportFragmentManager(), "NoRootDialog");
                             }
-                            startActivity(intent);
-                            finish();
-                        } else {
-                            noRootDialog.show(getSupportFragmentManager(), "NoRootDialog");
+                        } catch (Exception e) {
+                            Log.e("sksa.aa.tweaker", "Crash on proceed: " + e.getMessage(), e);
+                            Toast.makeText(SplashActivity.this,
+                                    "Crash: " + e.getClass().getSimpleName() + ": " + e.getMessage(),
+                                    Toast.LENGTH_LONG).show();
                         }
                     }
                 });
