@@ -34,20 +34,42 @@ sksa.aa.tweaker/
 
 ### SQLite Flag Injection
 
-Android Auto behaviour is controlled by Google Play Services **phenotype flags** stored at:
+Android Auto behaviour is controlled by **phenotype flag overrides** stored in the Google Play Services database at:
 ```
 /data/data/com.google.android.gms/databases/phenotype.db
 ```
 
-The app inserts rows into the `Flags` table with a package scope of `com.google.android.apps.auto` or `com.android.car.media`. Example:
+The app inserts rows into the **`FlagOverrides`** table with the Android Auto package name `com.google.android.projection.gearhead`. Example from the actual runtime log:
 
 ```sql
-INSERT OR REPLACE INTO Flags
-  (packageName, user, name, intVal, committed)
-  VALUES ('com.google.android.apps.auto', '', 'some_flag_name', 1, 0);
+INSERT OR REPLACE INTO FlagOverrides
+  (packageName, flagType, name, user, boolVal, committed)
+  VALUES ("com.google.android.projection.gearhead", 0, "Coolwalk__enabled", "", 0, 0);
+```
+
+> **Note**: The package name is `com.google.android.projection.gearhead` (the projected/phone-screen AA client), **not** `com.google.android.apps.auto`. The table is `FlagOverrides`, not `Flags`. Both distinctions matter when querying the DB manually.
+
+Some tweaks also create SQLite **TRIGGER**s on `FlagOverrides` so the flags are re-inserted automatically if Google Play Services deletes them:
+
+```sql
+CREATE TRIGGER aa_deactivate_coolwalk AFTER DELETE ON FlagOverrides
+BEGIN
+  INSERT OR REPLACE INTO FlagOverrides (...) VALUES (...);
+  ...
+END;
 ```
 
 ### Root Shell Execution
+
+The full operation sequence for each tweak (visible in runtime logs):
+
+1. `am kill all com.google.android.gms` — force-stop GMS so DB isn't locked
+2. `chown root <phenotype.db>` — take ownership of the database
+3. `setenforce 0` — set SELinux to permissive
+4. `<sqlite3 binary> -batch <phenotype.db> '<SQL>'` — run the flag inserts
+5. `pm enable com.google.android.gms` — re-enable GMS
+6. `chown u0_a133 <phenotype.db>` — restore original ownership
+7. `setenforce 1` — restore SELinux enforcing mode
 
 `MainActivity.runSuWithCmd(String cmd)` is the primary utility:
 - Opens a `su` shell via `Runtime.getRuntime().exec("su")`
@@ -55,15 +77,19 @@ INSERT OR REPLACE INTO Flags
 - Reads stdout and stderr into a `StreamLogs` object
 - Called from background threads (post-ANR refactor)
 
-### sqlite3 Binary
+### sqlite3 Binary — Current Status: BROKEN on 64-bit Devices
 
 A pre-compiled `sqlite3` binary is bundled in `app/src/main/res/raw/sqlite3`. On first launch, `SplashActivity.copyAssets()` copies it to:
 ```
-/data/data/sksa.aa.tweaker/sqlite3
+/data/user/0/sksa.aa.tweaker/sqlite3
 ```
-and sets permissions to 777. This binary is then invoked via root shell for all database operations.
+and sets permissions to 777.
 
-**Issue**: This binary is compiled for a specific ABI (likely ARM). Devices with different ABIs or ARM64-only environments may fail silently.
+**This binary is 32-bit ARM (armv7) only.** On any 64-bit-only Android device it produces:
+```
+not executable: 32-bit ELF file
+```
+and every SQL operation is skipped. See [Known Issues RT-001](Known-Issues.md#rt-001----32-bit-sqlite3-binary-fails-on-all-modern-64-bit-only-devices--all-tweaks-broken) for the fix.
 
 ## Activity Flow
 
@@ -91,9 +117,9 @@ SplashActivity
 | `com.android.support:appcompat-v7` | 28.0.0 | Base UI | Deprecated (use AndroidX) |
 | `com.android.support.constraint:constraint-layout` | 2.0.4 | Layouts | Deprecated |
 | `com.android.support:design` | 28.0.0 | Material components | Deprecated |
-| `com.romandanylyk:pageindicatorview` | 1.0.1 | Tab dots | jcenter only |
-| `com.rm:rmswitch` | 1.2.2 | Toggle switches | jcenter only |
-| `com.heinrichreimersoftware:android-issue-reporter` | 1.3.1 | Crash reporter | jcenter only |
+| `com.romandanylyk:pageindicatorview` | 1.0.1 | Tab dots | jcenter only — broken |
+| `com.rm:rmswitch` | 1.2.2 | Toggle switches | jcenter only — broken |
+| `com.heinrichreimersoftware:android-issue-reporter` | 1.3.1 | Crash reporter | jcenter only — broken |
 | `com.github.bravobit:jPastebin` | master-SNAPSHOT | Log upload | Unstable snapshot |
 | `com.android.volley:volley` | 1.2.1 | HTTP requests | OK (mavenCentral) |
 | `com.github.iGio90:BottomDialogs` | master-SNAPSHOT | Bottom sheets | Unstable snapshot |
